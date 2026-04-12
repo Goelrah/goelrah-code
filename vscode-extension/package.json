@@ -1,0 +1,67 @@
+{
+  "name": "rahulgoel-ai-studio",
+  "displayName": "Rahul Goel — AI Studio",
+  "description": "Private AI coding assistant — connects to your Ollama endpoint",
+  "version": "0.1.0",
+  "publisher": "rahulgoel",
+  "engines": { "vscode": "^1.90.0" },
+  "categories": ["Chat"],
+  "activationEvents": [
+    "onChatParticipant:ai-studio",
+    "onCommand:aiStudio.*"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "chatParticipants": [{
+      "id": "ai-studio",
+      "name": "ai-studio",
+      "fullName": "Rahul Goel AI Studio",
+      "description": "Private AI coding assistant",
+      "isSticky": true,
+      "commands": [
+        { "name": "explain", "description": "Explain selected code" },
+        { "name": "fix", "description": "Fix errors in code" },
+        { "name": "test", "description": "Generate tests" },
+        { "name": "review", "description": "Review code" },
+        { "name": "commit", "description": "Generate commit message" },
+        { "name": "askRepo", "description": "Ask about the workspace" }
+      ]
+    }],
+    "commands": [
+      { "command": "aiStudio.setEndpoint", "title": "AI Studio: Set Endpoint URL" },
+      { "command": "aiStudio.setAccessCode", "title": "AI Studio: Set Access Code" },
+      { "command": "aiStudio.checkHealth", "title": "AI Studio: Check Endpoint Health" },
+      { "command": "aiStudio.selectModel", "title": "AI Studio: Select Model" }
+    ],
+    "configuration": {
+      "title": "Rahul Goel AI Studio",
+      "properties": {
+        "aiStudio.endpointUrl": {
+          "type": "string",
+          "default": "https://rahulollama.loca.lt",
+          "description": "Ollama-compatible endpoint URL"
+        },
+        "aiStudio.model": {
+          "type": "string",
+          "default": "kimi-k2.5:cloud",
+          "description": "Default model name"
+        },
+        "aiStudio.systemPrompt": {
+          "type": "string",
+          "default": "You are Rahul Goel AI Studio, a private AI coding assistant. Be precise and technically accurate.",
+          "description": "System prompt sent with every request"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "watch": "tsc -watch -p .",
+    "package": "npx @vscode/vsce package --no-dependencies",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.5.0"
+  }
+}

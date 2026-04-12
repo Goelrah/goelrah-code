@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" class="h-screen antialiased scroll-smooth" data-mode="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>Rahul Goel — AI Studio</title>
+    <meta name="description" content="Rahul Goel AI Studio — Private AI Coding Assistant" />
+    <meta name="theme-color" content="hsl(60,11%,95%)" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- SPA redirect handler for GitHub Pages -->
+    <script>
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var url = p + (params.get('q') ? '?' + decodeURIComponent(params.get('q')) : '') + (params.get('h') ? decodeURIComponent(params.get('h')) : '');
+          window.history.replaceState(null, '', url);
+        }
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen" style="background: hsl(60,11%,95%); color: hsl(30,8%,12%);">
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

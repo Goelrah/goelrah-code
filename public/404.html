@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Rahul Goel — AI Studio</title>
+    <script>
+      // SPA redirect for GitHub Pages with HTML5 history mode
+      // Redirects all 404s back to index.html with the path preserved in a query param
+      // index.html then reads this and uses replaceState to restore the URL
+      var repo = '/goelrah-code';
+      var l = window.location;
+      var path = l.pathname;
+
+      // Strip repo prefix if present
+      if (path.indexOf(repo) === 0) {
+        path = path.slice(repo.length) || '/';
+      }
+
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        repo + '/?p=' + encodeURIComponent(path) +
+        (l.search ? '&q=' + encodeURIComponent(l.search.slice(1)) : '') +
+        (l.hash ? '&h=' + encodeURIComponent(l.hash) : '')
+      );
+    </script>
+  </head>
+  <body></body>
+</html>
