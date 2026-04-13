@@ -17,30 +17,26 @@
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
     a { color: var(--brand); text-decoration: none; }
     a:hover { text-decoration: underline; }
-
     .hero { text-align: center; padding: 80px 20px 60px; max-width: 700px; margin: 0 auto; }
     .hero-icon { width: 72px; height: 72px; background: var(--brand); border-radius: 18px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 24px; }
     .hero-icon span { color: #fff; font-size: 36px; font-weight: 700; }
     .hero h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; line-height: 1.2; }
     .hero h1 span { color: var(--brand); }
     .hero p { font-size: 18px; color: var(--dim); margin-top: 16px; line-height: 1.6; }
-
     .cta { display: flex; gap: 12px; justify-content: center; margin-top: 32px; flex-wrap: wrap; }
     .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 12px; font-size: 16px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; text-decoration: none; }
     .btn-primary { background: var(--brand); color: #fff; }
     .btn-primary:hover { background: #c96a4b; text-decoration: none; }
     .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
     .btn-secondary:hover { background: var(--bg); text-decoration: none; }
-
+    .btn-os-label { font-size: 12px; opacity: 0.8; font-weight: 400; }
     .badges { display: flex; gap: 8px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
     .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; background: var(--card); border: 1px solid var(--border); color: var(--dim); }
     .badge .dot { width: 8px; height: 8px; border-radius: 50%; }
     .dot-green { background: var(--green); }
     .dot-orange { background: var(--brand); }
-
     .section { max-width: 900px; margin: 0 auto; padding: 60px 20px; }
     .section h2 { font-size: 28px; font-weight: 700; text-align: center; margin-bottom: 40px; }
-
     .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     @media (max-width: 600px) { .compare { grid-template-columns: 1fr; } }
     .compare-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
@@ -51,21 +47,20 @@
     .compare-card.them li::before { background: #d14343; }
     .compare-card.us li::before { background: var(--green); }
     .compare-card.us { border-color: var(--brand); border-width: 2px; }
-
     .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
     .feature { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
     .feature-icon { font-size: 24px; margin-bottom: 8px; }
     .feature h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
     .feature p { font-size: 14px; color: var(--dim); line-height: 1.5; }
-
     .download-section { text-align: center; background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 40px; }
     .download-grid { display: flex; gap: 16px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
     .dl-card { padding: 20px 32px; border: 1px solid var(--border); border-radius: 12px; text-align: center; min-width: 160px; transition: all 0.2s; }
     .dl-card:hover { border-color: var(--brand); background: #fdf8f6; text-decoration: none; }
+    .dl-card.active { border-color: var(--brand); border-width: 2px; background: #fdf8f6; }
     .dl-card .os { font-size: 32px; }
     .dl-card .label { font-size: 14px; font-weight: 600; margin-top: 8px; color: var(--text); }
     .dl-card .size { font-size: 12px; color: var(--muted); }
-
+    .dl-card .rec { display: inline-block; font-size: 10px; background: var(--brand); color: #fff; padding: 2px 8px; border-radius: 10px; margin-top: 6px; }
     .footer { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
     .footer a { color: var(--dim); }
   </style>
@@ -78,7 +73,9 @@
     <h1>Your own <span>private AI</span> that runs on your machine</h1>
     <p>No cloud. No subscriptions. No data collection. Just you and a powerful AI coding assistant, running 100% locally. Free forever.</p>
     <div class="cta">
-      <a href="https://github.com/goelrah/goelrah-code/releases/latest" class="btn btn-primary">⬇ Download Free</a>
+      <a id="hero-download" href="#download" class="btn btn-primary">
+        ⬇ Download Free <span class="btn-os-label" id="hero-os-label"></span>
+      </a>
       <a href="https://github.com/goelrah/goelrah-code" class="btn btn-secondary">⭐ View on GitHub</a>
     </div>
     <div class="badges">
@@ -120,61 +117,43 @@
   <div class="section">
     <h2>Everything you need</h2>
     <div class="features">
-      <div class="feature">
-        <div class="feature-icon">💬</div>
-        <h3>Streaming Chat</h3>
-        <p>Responses appear word by word, just like ChatGPT. Fast and responsive.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🤖</div>
-        <h3>Multiple Models</h3>
-        <p>Switch between llama3, mistral, gemma, kimi, and dozens more with one click.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🧙</div>
-        <h3>Setup Wizard</h3>
-        <p>Guided installation — installs Ollama, downloads models, configures everything.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">⌨️</div>
-        <h3>Keyboard First</h3>
-        <p>Command palette, slash commands, shortcuts. Built for developers who type fast.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">📝</div>
-        <h3>27 Prompt Templates</h3>
-        <p>Code review, testing, debugging, documentation, security audits — ready to use.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🔌</div>
-        <h3>VS Code Extension</h3>
-        <p>Use AI Studio right in your editor with @ai-studio chat and slash commands.</p>
-      </div>
+      <div class="feature"><div class="feature-icon">💬</div><h3>Streaming Chat</h3><p>Responses appear word by word, just like ChatGPT. Fast and responsive.</p></div>
+      <div class="feature"><div class="feature-icon">🤖</div><h3>Multiple Models</h3><p>Switch between llama3, mistral, gemma, kimi, and dozens more with one click.</p></div>
+      <div class="feature"><div class="feature-icon">🧙</div><h3>Setup Wizard</h3><p>Guided installation — installs Ollama, downloads models, configures everything.</p></div>
+      <div class="feature"><div class="feature-icon">⌨️</div><h3>Keyboard First</h3><p>Command palette, slash commands, shortcuts. Built for developers who type fast.</p></div>
+      <div class="feature"><div class="feature-icon">📝</div><h3>27 Prompt Templates</h3><p>Code review, testing, debugging, documentation, security audits — ready to use.</p></div>
+      <div class="feature"><div class="feature-icon">🔌</div><h3>VS Code Extension</h3><p>Use AI Studio right in your editor with @ai-studio chat and slash commands.</p></div>
     </div>
   </div>
 
   <!-- Download -->
-  <div class="section">
+  <div class="section" id="download">
     <div class="download-section">
       <h2>Download AI Studio</h2>
       <p style="color: var(--dim); margin-top: 8px;">Free. No account. No credit card. Just download and run.</p>
       <div class="download-grid">
-        <a href="https://github.com/goelrah/goelrah-code/releases/latest" class="dl-card">
+        <a id="dl-mac" href="#" class="dl-card">
           <div class="os">🍎</div>
           <div class="label">macOS</div>
-          <div class="size">.dmg · ~80MB</div>
+          <div class="size">.dmg · Intel & Apple Silicon</div>
+          <div class="rec" id="rec-mac" style="display:none;">Recommended for you</div>
         </a>
-        <a href="https://github.com/goelrah/goelrah-code/releases/latest" class="dl-card">
+        <a id="dl-win" href="#" class="dl-card">
           <div class="os">🪟</div>
           <div class="label">Windows</div>
-          <div class="size">.exe · ~80MB</div>
+          <div class="size">.exe installer</div>
+          <div class="rec" id="rec-win" style="display:none;">Recommended for you</div>
         </a>
-        <a href="https://github.com/goelrah/goelrah-code/releases/latest" class="dl-card">
+        <a id="dl-linux" href="#" class="dl-card">
           <div class="os">🐧</div>
           <div class="label">Linux</div>
-          <div class="size">.AppImage · ~80MB</div>
+          <div class="size">.AppImage · Universal</div>
+          <div class="rec" id="rec-linux" style="display:none;">Recommended for you</div>
         </a>
       </div>
+      <p style="color: var(--muted); font-size: 13px; margin-top: 16px;">
+        Or <a href="https://github.com/goelrah/goelrah-code/releases">view all releases</a> on GitHub
+      </p>
     </div>
   </div>
 
@@ -184,5 +163,54 @@
     <p style="margin-top: 8px;"><a href="https://github.com/goelrah/goelrah-code">GitHub</a> · <a href="https://github.com/goelrah/goelrah-code/releases">Releases</a> · MIT License</p>
   </div>
 
+  <script>
+    // GitHub repo info — update these to match your repo
+    var REPO = 'goelrah/goelrah-code';
+    var APP_NAME = 'Rahul.Goel.AI.Studio';
+
+    // Detect OS
+    var ua = navigator.userAgent.toLowerCase();
+    var os = ua.includes('mac') ? 'mac' : ua.includes('win') ? 'win' : 'linux';
+
+    // Highlight recommended platform
+    document.getElementById('rec-' + os).style.display = 'inline-block';
+    document.getElementById('dl-' + os).classList.add('active');
+
+    // Set hero button label
+    var osLabels = { mac: 'for macOS', win: 'for Windows', linux: 'for Linux' };
+    document.getElementById('hero-os-label').textContent = osLabels[os] || '';
+
+    // Fetch latest release from GitHub API and set direct download links
+    fetch('https://api.github.com/repos/' + REPO + '/releases/latest')
+      .then(function(r) { return r.json(); })
+      .then(function(release) {
+        var assets = release.assets || [];
+        var macUrl = '', winUrl = '', linuxUrl = '';
+
+        assets.forEach(function(a) {
+          var name = a.name.toLowerCase();
+          if (name.endsWith('.dmg')) macUrl = a.browser_download_url;
+          else if (name.endsWith('.exe') || name.endsWith('.msi')) winUrl = a.browser_download_url;
+          else if (name.endsWith('.appimage') || name.endsWith('.deb')) linuxUrl = a.browser_download_url;
+        });
+
+        var fallback = 'https://github.com/' + REPO + '/releases/latest';
+        document.getElementById('dl-mac').href = macUrl || fallback;
+        document.getElementById('dl-win').href = winUrl || fallback;
+        document.getElementById('dl-linux').href = linuxUrl || fallback;
+
+        // Set hero download to user's OS
+        var heroUrl = os === 'mac' ? macUrl : os === 'win' ? winUrl : linuxUrl;
+        document.getElementById('hero-download').href = heroUrl || fallback;
+      })
+      .catch(function() {
+        // No release yet — link to releases page
+        var fallback = 'https://github.com/' + REPO + '/releases';
+        document.getElementById('dl-mac').href = fallback;
+        document.getElementById('dl-win').href = fallback;
+        document.getElementById('dl-linux').href = fallback;
+        document.getElementById('hero-download').href = fallback;
+      });
+  </script>
 </body>
 </html>
