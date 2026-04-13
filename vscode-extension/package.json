@@ -1,6 +1,6 @@
 {
   "name": "rahulgoel-ai-studio",
-  "displayName": "Rahul Goel — AI Studio",
+  "displayName": "Velora AI",
   "description": "Private AI coding assistant — connects to your Ollama endpoint",
   "version": "0.1.0",
   "publisher": "rahulgoel",
@@ -15,7 +15,7 @@
     "chatParticipants": [{
       "id": "ai-studio",
       "name": "ai-studio",
-      "fullName": "Rahul Goel AI Studio",
+      "fullName": "Velora AI Studio",
       "description": "Private AI coding assistant",
       "isSticky": true,
       "commands": [
@@ -28,13 +28,13 @@
       ]
     }],
     "commands": [
-      { "command": "aiStudio.setEndpoint", "title": "AI Studio: Set Endpoint URL" },
-      { "command": "aiStudio.setAccessCode", "title": "AI Studio: Set Access Code" },
-      { "command": "aiStudio.checkHealth", "title": "AI Studio: Check Endpoint Health" },
-      { "command": "aiStudio.selectModel", "title": "AI Studio: Select Model" }
+      { "command": "aiStudio.setEndpoint", "title": "Velora AI: Set Endpoint URL" },
+      { "command": "aiStudio.setAccessCode", "title": "Velora AI: Set Access Code" },
+      { "command": "aiStudio.checkHealth", "title": "Velora AI: Check Endpoint Health" },
+      { "command": "aiStudio.selectModel", "title": "Velora AI: Select Model" }
     ],
     "configuration": {
-      "title": "Rahul Goel AI Studio",
+      "title": "Velora AI Studio",
       "properties": {
         "aiStudio.endpointUrl": {
           "type": "string",
@@ -48,7 +48,7 @@
         },
         "aiStudio.systemPrompt": {
           "type": "string",
-          "default": "You are Rahul Goel AI Studio, a private AI coding assistant. Be precise and technically accurate.",
+          "default": "You are Velora AI Studio, a private AI coding assistant. Be precise and technically accurate.",
           "description": "System prompt sent with every request"
         }
       }

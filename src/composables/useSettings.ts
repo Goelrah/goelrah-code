@@ -1,6 +1,7 @@
 import { reactive, watch } from 'vue';
 import type { AppSettings } from '@/types/settings';
 import { storage } from '@/services/storage';
+import { useSaveNotify } from './useSaveNotify';
 
 const defaults: AppSettings = {
   endpointUrl: import.meta.env.VITE_DEFAULT_ENDPOINT ?? 'http://localhost:11434',
@@ -9,12 +10,16 @@ const defaults: AppSettings = {
   temperature: 0.7,
   maxTokens: 4096,
   theme: 'light',
-  agentName: 'AI Studio',
+  agentName: 'Velora AI',
 };
 
 const settings = reactive<AppSettings>(storage.get('settings', defaults));
+const { flash } = useSaveNotify();
 
-watch(settings, (val) => storage.set('settings', val), { deep: true });
+watch(settings, (val) => {
+  storage.set('settings', val);
+  flash();
+}, { deep: true });
 
 export function useSettings() {
   function reset() {

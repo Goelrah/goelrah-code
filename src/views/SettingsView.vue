@@ -3,11 +3,13 @@ import { ref } from 'vue';
 import AppShell from '@/components/layout/AppShell.vue';
 import { useSettings } from '@/composables/useSettings';
 import { useEndpointHealth } from '@/composables/useEndpointHealth';
+import { useSaveNotify } from '@/composables/useSaveNotify';
 import { OllamaClient } from '@/services/ollama-client';
 import type { ModelInfo } from '@/types/settings';
 
 const { settings, reset } = useSettings();
 const { health, checking, check } = useEndpointHealth();
+const { saved } = useSaveNotify();
 const models = ref<ModelInfo[]>([]);
 const loadingModels = ref(false);
 
@@ -22,13 +24,21 @@ async function fetchModels() {
   <AppShell>
     <div class="flex-1 overflow-y-auto">
       <div class="mx-auto max-w-2xl px-4 py-8">
-        <h1 class="text-lg font-semibold" :style="{ color: 'var(--text-100)' }">Settings</h1>
+        <div class="flex items-center justify-between">
+          <h1 class="text-lg font-semibold" :style="{ color: 'var(--text-100)' }">Settings</h1>
+          <transition name="save-fade">
+            <span v-if="saved" class="flex items-center gap-1 text-xs font-medium" :style="{ color: 'var(--success)' }">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              Saved
+            </span>
+          </transition>
+        </div>
         <div class="mt-6 space-y-6">
           <!-- Agent Name -->
           <div class="rounded-xl border p-4" :style="{ background: 'var(--bg-000)', borderColor: 'var(--border-300)' }">
             <label class="text-sm font-medium" :style="{ color: 'var(--text-100)' }">Agent Name</label>
             <p class="text-xs mt-1" :style="{ color: 'var(--text-400)' }">Give your AI assistant a custom name</p>
-            <input v-model="settings.agentName" type="text" placeholder="AI Studio"
+            <input v-model="settings.agentName" type="text" placeholder="Velora AI"
               class="mt-2 w-full rounded-lg border px-3 py-2 text-sm focus:outline-none"
               :style="{ background: 'var(--bg-000)', borderColor: 'var(--border-300)', color: 'var(--text-100)' }" />
           </div>
@@ -95,3 +105,9 @@ async function fetchModels() {
     </div>
   </AppShell>
 </template>
+
+<style scoped>
+.save-fade-enter-active { transition: all 0.3s ease; }
+.save-fade-leave-active { transition: all 0.3s ease; }
+.save-fade-enter-from, .save-fade-leave-to { opacity: 0; transform: translateY(-4px); }
+</style>

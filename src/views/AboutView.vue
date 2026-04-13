@@ -6,9 +6,9 @@ import AppShell from '@/components/layout/AppShell.vue';
   <AppShell>
     <div class="flex-1 overflow-y-auto">
       <div class="mx-auto max-w-2xl px-4 py-8">
-        <h1 class="text-lg font-semibold" :style="{ color: 'var(--text-100)' }">About Rahul Goel — AI Studio</h1>
+        <h1 class="text-lg font-semibold" :style="{ color: 'var(--text-100)' }">About Velora AI</h1>
         <div class="mt-4 space-y-3 text-sm leading-relaxed" :style="{ color: 'var(--text-200)' }">
-          <p>Rahul Goel AI Studio is a private AI coding assistant that connects to your own Ollama-compatible endpoint. It runs entirely in your browser — no server-side code, no hidden secrets.</p>
+          <p>Velora AI is an enterprise-grade private AI coding assistant that connects to your own Ollama-compatible endpoint. It runs entirely on your machine — no cloud, no data collection, no limits.</p>
           <p>All AI inference happens on your private server. This frontend is just the interface.</p>
         </div>
         <div class="mt-8 rounded-xl border p-5" :style="{ background: 'var(--bg-000)', borderColor: 'var(--border-300)' }">

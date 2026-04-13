@@ -1,4 +1,4 @@
-# Rahul Goel — AI Studio (VS Code Extension)
+# Velora AI (VS Code Extension)
 
 Private AI coding assistant extension that connects to your Ollama endpoint.
 
@@ -19,10 +19,10 @@ Type `@ai-studio` in VS Code chat to start a conversation.
 
 ## Commands
 
-- `AI Studio: Set Endpoint URL` — configure your Ollama server
-- `AI Studio: Set Access Code` — store auth securely
-- `AI Studio: Check Endpoint Health` — verify connectivity
-- `AI Studio: Select Model` — pick from available models
+- `Velora AI: Set Endpoint URL` — configure your Ollama server
+- `Velora AI: Set Access Code` — store auth securely
+- `Velora AI: Check Endpoint Health` — verify connectivity
+- `Velora AI: Select Model` — pick from available models
 
 ## Configuration
 

@@ -88,7 +88,7 @@ export function activate(context: vscode.ExtensionContext) {
       });
       if (url) {
         await vscode.workspace.getConfiguration('aiStudio').update('endpointUrl', url, true);
-        vscode.window.showInformationMessage(`AI Studio: Endpoint set to ${url}`);
+        vscode.window.showInformationMessage(`Velora AI: Endpoint set to ${url}`);
       }
     }),
 
@@ -99,7 +99,7 @@ export function activate(context: vscode.ExtensionContext) {
       });
       if (code) {
         await context.secrets.store('aiStudio.accessCode', code);
-        vscode.window.showInformationMessage('AI Studio: Access code saved securely.');
+        vscode.window.showInformationMessage('Velora AI: Access code saved securely.');
       }
     }),
 
@@ -108,9 +108,9 @@ export function activate(context: vscode.ExtensionContext) {
       client.setEndpoint(cfg.endpoint);
       const h = await client.checkHealth();
       if (h.ok) {
-        vscode.window.showInformationMessage(`AI Studio: Connected ✓ — ${h.models} models, ${h.latency}ms`);
+        vscode.window.showInformationMessage(`Velora AI: Connected ✓ — ${h.models} models, ${h.latency}ms`);
       } else {
-        vscode.window.showErrorMessage(`AI Studio: ${h.error}`);
+        vscode.window.showErrorMessage(`Velora AI: ${h.error}`);
       }
     }),
 
@@ -125,10 +125,10 @@ export function activate(context: vscode.ExtensionContext) {
         );
         if (pick) {
           await vscode.workspace.getConfiguration('aiStudio').update('model', pick.label, true);
-          vscode.window.showInformationMessage(`AI Studio: Model set to ${pick.label}`);
+          vscode.window.showInformationMessage(`Velora AI: Model set to ${pick.label}`);
         }
       } catch (err) {
-        vscode.window.showErrorMessage(`AI Studio: Could not fetch models — ${(err as Error).message}`);
+        vscode.window.showErrorMessage(`Velora AI: Could not fetch models — ${(err as Error).message}`);
       }
     }),
   );

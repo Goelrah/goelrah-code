@@ -7,6 +7,7 @@ import { useSettings } from '@/composables/useSettings';
 import MessageBubble from './MessageBubble.vue';
 import ChatInput from './ChatInput.vue';
 import StreamingIndicator from './StreamingIndicator.vue';
+import WelcomeScreen from './WelcomeScreen.vue';
 
 const router = useRouter();
 const { streaming, error, send, stop } = useChat();
@@ -60,22 +61,9 @@ function exportConversation() {
       </div>
     </template>
 
-    <!-- Empty state — claude.com style -->
+    <!-- Empty state — animated welcome -->
     <template v-else>
-      <div class="flex flex-col items-center gap-7 pt-[10vh] md:pt-[20vh] w-full">
-        <!-- Greeting -->
-        <div class="w-full flex justify-center">
-          <div class="flex items-center gap-4 font-display" style="line-height: 1.5; font-size: clamp(1.875rem, 1.2rem + 2vw, 2.5rem);">
-            <div class="flex-shrink-0">
-              <div class="flex h-10 w-10 items-center justify-center rounded-xl select-none"
-                :style="{ background: 'var(--accent-brand)', color: '#fff' }">
-                <span class="text-lg font-bold">R</span>
-              </div>
-            </div>
-            <span class="whitespace-nowrap select-none" :style="{ color: 'var(--text-200)' }">How can I help you?</span>
-          </div>
-        </div>
-      </div>
+      <WelcomeScreen @send="send" />
     </template>
 
     <!-- Error -->
@@ -88,22 +76,6 @@ function exportConversation() {
     <!-- Input area — always at bottom -->
     <div class="w-full sticky bottom-0 z-10 pb-2">
       <ChatInput :streaming="streaming" @send="send" @stop="stop" @slash-command="handleSlashCommand" />
-
-      <!-- Suggestion pills (only on empty state) -->
-      <div v-if="!activeSession || activeSession.messages.length === 0" class="flex flex-wrap justify-center w-full gap-2 pt-4">
-        <button
-          v-for="s in suggestions"
-          :key="s.label"
-          class="flex items-center gap-1.5 rounded-lg border px-2.5 h-8 text-sm transition-all active:scale-[0.995]"
-          :style="{ borderColor: 'var(--border-300)', color: 'var(--text-200)', background: 'var(--bg-100)' }"
-          @click="send(`Help me ${s.label.toLowerCase()}`)"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256" class="flex-shrink-0 -ml-0.5" :style="{ color: 'var(--text-500)' }">
-            <path :d="s.icon" />
-          </svg>
-          <span>{{ s.label }}</span>
-        </button>
-      </div>
     </div>
   </main>
 </template>

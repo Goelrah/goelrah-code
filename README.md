@@ -1,30 +1,34 @@
 <p align="center">
-  <img src="public/favicon.svg" width="80" height="80" alt="AI Studio" />
+  <img src="public/favicon.svg" width="80" height="80" alt="Velora AI" />
 </p>
 
-<h1 align="center">Rahul Goel — AI Studio</h1>
+<h1 align="center">Velora AI Studio</h1>
 
 <p align="center">
-  <strong>Your own private ChatGPT. Runs 100% on your machine. Free forever.</strong>
+  <strong>Enterprise-grade private AI assistant. Runs 100% on your machine. Free forever.</strong>
 </p>
 
 <p align="center">
-  <a href="https://github.com/goelrah/goelrah-code/releases/latest"><img src="https://img.shields.io/badge/Download-Latest%20Release-da7756?style=for-the-badge&logo=github" alt="Download" /></a>
-  <a href="https://goelrah.github.io/goelrah-code/"><img src="https://img.shields.io/badge/Live%20Demo-Try%20Now-2d8a56?style=for-the-badge" alt="Demo" /></a>
+  <em>Est. April 2026 · Powered by <a href="https://goelrah.github.io/">Rahul Goel</a></em>
+</p>
+
+<p align="center">
+  <a href="https://github.com/Goelrah/goelrah-code/releases/latest"><img src="https://img.shields.io/badge/Download-Latest%20Release-0d9488?style=for-the-badge&logo=github" alt="Download" /></a>
+  <a href="https://goelrah.github.io/goelrah-code/"><img src="https://img.shields.io/badge/Website-Visit-6366f1?style=for-the-badge" alt="Website" /></a>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="License" />
   <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey" alt="Platform" />
-  <img src="https://img.shields.io/badge/AI-100%25%20Local-green" alt="Local AI" />
-  <img src="https://img.shields.io/badge/cost-$0%20forever-orange" alt="Free" />
+  <img src="https://img.shields.io/badge/AI-100%25%20Local-0d9488" alt="Local AI" />
+  <img src="https://img.shields.io/badge/cost-$0%20forever-6366f1" alt="Free" />
 </p>
 
 ---
 
-## Why AI Studio?
+## Why Velora AI?
 
-| ChatGPT / Claude | AI Studio |
+| ChatGPT / Claude | Velora AI |
 |---|---|
 | ☁️ Cloud — your data goes to their servers | 🏠 **100% local** — nothing leaves your machine |
 | 💰 $20/month subscription | 🆓 **Free forever** |
@@ -34,70 +38,47 @@
 
 ## Download
 
-| Platform | Download | Size |
-|----------|----------|------|
-| 🍎 macOS | [AI-Studio.dmg](https://github.com/goelrah/goelrah-code/releases/latest) | ~80MB |
-| 🪟 Windows | [AI-Studio-Setup.exe](https://github.com/goelrah/goelrah-code/releases/latest) | ~80MB |
-| 🐧 Linux | [AI-Studio.AppImage](https://github.com/goelrah/goelrah-code/releases/latest) | ~80MB |
+| Platform | Download |
+|----------|----------|
+| 🍎 macOS | [Velora-AI-Studio.dmg](https://github.com/Goelrah/goelrah-code/releases/latest) |
+| 🪟 Windows | [Velora-AI-Studio-Setup.exe](https://github.com/Goelrah/goelrah-code/releases/latest) |
+| 🐧 Linux | [Velora-AI-Studio.AppImage](https://github.com/Goelrah/goelrah-code/releases/latest) |
 
 > **First launch?** The built-in setup wizard installs everything for you — Ollama, AI models, all dependencies. Just click through.
 
-## Screenshots
-
-<p align="center">
-  <img src="docs/screenshots/chat.png" width="700" alt="Chat Interface" />
-</p>
-
-<details>
-<summary>More screenshots</summary>
-
-| Setup Wizard | Model Selector | Dark Mode |
-|---|---|---|
-| <img src="docs/screenshots/wizard.png" width="250" /> | <img src="docs/screenshots/models.png" width="250" /> | <img src="docs/screenshots/dark.png" width="250" /> |
-
-</details>
-
 ## Features
 
-- 💬 **Streaming chat** — responses appear word by word, just like ChatGPT
+- 💬 **Streaming chat** — responses appear word by word
 - 🤖 **Multiple models** — switch between llama3, mistral, gemma, kimi, and more
-- 🎨 **Beautiful UI** — clean, warm design inspired by the best AI tools
+- 🧠 **Thinking animation** — see the AI reason in real-time
 - ⌨️ **Keyboard-first** — Cmd+K command palette, slash commands, shortcuts
 - 📝 **27 prompt templates** — code review, testing, debugging, docs, security
 - 🌙 **Dark & light mode**
-- 💾 **Session history** — conversations saved locally, never lost
-- 📤 **Export chats** — download as markdown
-- 🔌 **VS Code extension** — use AI Studio right in your editor
+- 🏷️ **Custom agent name** — personalize your assistant
+- 💾 **Session history** — conversations saved locally
+- 🔌 **VS Code extension** — use Velora AI right in your editor
 - 🧙 **Setup wizard** — guided installation, zero terminal knowledge needed
 
-## Quick Start (2 minutes)
+## Quick Start
 
-### Option A: Desktop App (Recommended)
-1. Download from [Releases](https://github.com/goelrah/goelrah-code/releases/latest)
-2. Open the app
-3. Follow the setup wizard — it handles everything
-4. Start chatting
+### Desktop App (Recommended)
+1. Download from [Releases](https://github.com/Goelrah/goelrah-code/releases/latest)
+2. Open the app → setup wizard guides you
+3. Start chatting
 
-### Option B: Run from Source
+### From Source
 ```bash
-git clone https://github.com/goelrah/goelrah-code.git
+git clone https://github.com/Goelrah/goelrah-code.git
 cd goelrah-code
 ./scripts/setup.sh    # macOS/Linux
-# or
-.\scripts\setup.ps1   # Windows PowerShell
+.\scripts\setup.ps1   # Windows
 ```
 
-### Option C: Browser Only
+### Browser Only
 ```bash
-# Start Ollama with CORS enabled (required)
-OLLAMA_ORIGINS="*" ollama serve
-
-# In another terminal
-npm install && npm run dev
+OLLAMA_ORIGINS="*" ollama serve   # Terminal 1
+npm install && npm run dev         # Terminal 2
 ```
-Open http://localhost:5173
-
-> **Important:** Always start Ollama with `OLLAMA_ORIGINS="*"` so the browser can connect to it.
 
 ## How It Works
 
@@ -105,7 +86,7 @@ Open http://localhost:5173
 ┌─────────────────────────────────┐
 │  Your Computer                  │
 │                                 │
-│  AI Studio ←→ Ollama            │
+│  Velora AI ←→ Ollama            │
 │  (the UI)     (the AI brain)    │
 │                                 │
 │  No internet. No cloud.         │
@@ -113,43 +94,9 @@ Open http://localhost:5173
 └─────────────────────────────────┘
 ```
 
-AI Studio is just a beautiful frontend. [Ollama](https://ollama.com) runs the AI models locally on your CPU/GPU. The setup wizard installs both automatically.
-
-## Keyboard Shortcuts
-
-| Shortcut | Action |
-|----------|--------|
-| `⌘K` | Command palette |
-| `⌘N` | New chat |
-| `⌘B` | Toggle sidebar |
-| `⌘J` | Toggle theme |
-| `/` | Focus input |
-
-## Slash Commands
-
-| Command | Action |
-|---------|--------|
-| `/clear` | Clear conversation |
-| `/model llama3` | Switch model |
-| `/export` | Download chat |
-| `/new` | New session |
-
-## Recommended Models
-
-```bash
-ollama pull kimi-k2.5:cloud    # Smart, cloud-connected
-ollama pull llama3.1:8b         # Fast, local, 8B params
-ollama pull qwen2.5-coder:3b   # Tiny, great for code
-ollama pull mistral             # Balanced 7B
-```
-
 ## Tech Stack
 
 Vue 3 · TypeScript · Tailwind CSS · Vite · Electron · Ollama
-
-## Contributing
-
-PRs welcome! See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for technical details.
 
 ## License
 
@@ -158,10 +105,8 @@ MIT — use it however you want.
 ---
 
 <p align="center">
-  <strong>Built by <a href="https://github.com/goelrah">Rahul Goel</a></strong><br/>
-  Independent Consultant
+  <strong>Velora AI Studio · Est. April 2026</strong><br/>
+  Powered by <a href="https://goelrah.github.io/">Rahul Goel</a> · Independent Consultant · 🇮🇳 Made in India
 </p>
 
-<p align="center">
-  ⭐ Star this repo if you find it useful!
-</p>
+<p align="center">⭐ Star this repo if you find it useful!</p>

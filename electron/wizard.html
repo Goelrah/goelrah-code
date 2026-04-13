@@ -2,234 +2,205 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Rahul Goel — AI Studio</title>
+<title>Velora Velora AI — Setup</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f3ef;color:#1a1714;height:100vh;overflow:hidden;display:flex;flex-direction:column;-webkit-app-region:drag}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f172a;color:#f1f5f9;height:100vh;overflow:hidden;display:flex;flex-direction:column;-webkit-app-region:drag}
 button,a,input{-webkit-app-region:no-drag}
 .titlebar{height:38px;flex-shrink:0}
-.main{flex:1;display:flex;align-items:center;justify-content:center;position:relative}
-
-/* ─── Screens ─── */
-.screen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.6s ease,transform 0.6s ease;transform:translateY(20px)}
-.screen.active{opacity:1;pointer-events:auto;transform:translateY(0)}
-
-/* ─── Welcome Screen ─── */
-.welcome{text-align:center;max-width:400px;padding:20px}
-.avatar-wrap{position:relative;display:inline-block;margin-bottom:20px}
-.avatar{width:120px;height:120px;position:relative}
-.avatar-body{width:100%;height:100%;animation:float 3s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.avatar svg{width:100%;height:100%}
-.avatar-glow{position:absolute;inset:-20px;border-radius:50%;background:radial-gradient(circle,rgba(218,119,86,0.15) 0%,transparent 70%);animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:0.5;transform:scale(0.95)}50%{opacity:1;transform:scale(1.05)}}
-.welcome h1{font-size:22px;font-weight:600;animation:fadeUp 0.8s ease 0.3s both}
-.welcome .subtitle{font-size:14px;color:#9b958e;margin-top:8px;animation:fadeUp 0.8s ease 0.5s both}
-.welcome .begin-btn{margin-top:28px;animation:fadeUp 0.8s ease 0.7s both}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-
-/* ─── Setup Screen ─── */
-.setup{width:100%;max-width:520px;padding:20px}
-.setup-header{text-align:center;margin-bottom:24px}
-.setup-header h2{font-size:18px;font-weight:600}
-.setup-header p{font-size:13px;color:#9b958e;margin-top:4px}
-
-/* Stepper */
-.stepper{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:28px}
-.stepper-step{display:flex;align-items:center}
-.stepper-circle{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;transition:all 0.4s ease;border:2px solid #e3e0d9;background:#fff;color:#9b958e}
-.stepper-circle.active{border-color:#da7756;background:#da7756;color:#fff;box-shadow:0 0 0 4px rgba(218,119,86,0.15)}
-.stepper-circle.done{border-color:#2d8a56;background:#2d8a56;color:#fff}
-.stepper-circle.fail{border-color:#d14343;background:#d14343;color:#fff}
-.stepper-line{width:40px;height:2px;background:#e3e0d9;transition:background 0.4s}
-.stepper-line.done{background:#2d8a56}
-
-/* Step content */
-.step-content{background:#fff;border:1px solid #e3e0d9;border-radius:16px;padding:24px;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transition:all 0.3s}
-.step-content h3{font-size:16px;font-weight:600;margin-bottom:4px}
-.step-content .desc{font-size:13px;color:#9b958e}
-.status-box{margin-top:14px;font-size:13px;padding:8px 16px;border-radius:8px;max-width:100%;word-break:break-word}
-.status-box.ok{background:#ecfdf5;color:#166534}
-.status-box.err{background:#fef2f2;color:#991b1b}
-.status-box.loading{background:#fffbeb;color:#92400e}
-.cmd-box{margin-top:10px;background:#1a1714;color:#e3e0d9;padding:10px 14px;border-radius:8px;font-family:'SF Mono',Menlo,monospace;font-size:12px;text-align:left;user-select:all;max-width:100%;overflow-x:auto}
-
-.step-actions{display:flex;gap:8px;justify-content:center;margin-top:20px}
-
-/* Buttons */
+.main{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(45,212,191,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(45,212,191,0.03) 1px,transparent 1px);background-size:40px 40px;animation:gm 20s linear infinite}
+@keyframes gm{to{background-position:40px 40px}}
+.screen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all 0.6s cubic-bezier(0.4,0,0.2,1);transform:scale(0.95)}
+.screen.active{opacity:1;pointer-events:auto;transform:scale(1)}
+.loading{text-align:center}
+.loading-ring{width:80px;height:80px;margin:0 auto 24px}
+.loading-ring svg{animation:rs 2s linear infinite}
+@keyframes rs{to{transform:rotate(360deg)}}
+.loading h2{font-size:18px;font-weight:600;animation:fi 0.8s ease 0.3s both}
+.loading p{font-size:13px;color:#94a3b8;margin-top:6px;animation:fi 0.8s ease 0.5s both}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.welcome{text-align:center;max-width:420px;padding:20px;z-index:1}
+.avatar{width:100px;height:100px;margin:0 auto 20px;position:relative}
+.avatar-body{animation:fl 3s ease-in-out infinite}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.avatar-glow{position:absolute;inset:-30px;border-radius:50%;background:radial-gradient(circle,rgba(45,212,191,0.2) 0%,transparent 70%);animation:gp 2s ease-in-out infinite}
+@keyframes gp{0%,100%{opacity:0.4;transform:scale(0.9)}50%{opacity:1;transform:scale(1.1)}}
+.welcome h1{font-size:24px;font-weight:700;background:linear-gradient(135deg,#2dd4bf,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fi 0.8s ease 0.3s both}
+.welcome .sub{font-size:14px;color:#94a3b8;margin-top:8px;animation:fi 0.8s ease 0.5s both}
+.welcome .begin{margin-top:28px;animation:fi 0.8s ease 0.7s both}
+.setup{width:100%;max-width:560px;padding:20px;z-index:1}
+.setup-top{text-align:center;margin-bottom:20px}
+.setup-top h2{font-size:18px;font-weight:600}
+.setup-top p{font-size:13px;color:#94a3b8;margin-top:4px}
+.stepper{display:flex;align-items:center;justify-content:center;margin-bottom:24px}
+.sc{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;transition:all 0.4s;border:2px solid #334155;background:#1e293b;color:#64748b;cursor:pointer}
+.sc.active{border-color:#2dd4bf;background:linear-gradient(135deg,#0d9488,#0f766e);color:#fff;box-shadow:0 0 20px rgba(45,212,191,0.3)}
+.sc.done{border-color:#059669;background:#059669;color:#fff}
+.sc.fail{border-color:#dc2626;background:#dc2626;color:#fff}
+.sl{width:32px;height:2px;background:#334155;transition:background 0.4s}
+.sl.done{background:#059669}
+.card{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:24px;min-height:200px;transition:all 0.3s}
+.card.current{border-color:rgba(45,212,191,0.3);box-shadow:0 0 30px rgba(13,148,136,0.08)}
+.card h3{font-size:16px;font-weight:600;margin-bottom:4px}
+.card .desc{font-size:13px;color:#94a3b8;line-height:1.6}
+.card .why{margin-top:12px;padding:10px 14px;border-radius:10px;background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.1);font-size:12px;color:#94a3b8;line-height:1.6}
+.card .why b{color:#2dd4bf}
+.status{margin-top:12px;font-size:13px;padding:8px 14px;border-radius:8px}
+.status.ok{background:rgba(5,150,105,0.15);color:#34d399}
+.status.err{background:rgba(220,38,38,0.15);color:#f87171}
+.status.loading{background:rgba(217,119,6,0.15);color:#fbbf24}
+.cmd{margin-top:10px;background:#0f172a;color:#94a3b8;padding:10px 14px;border-radius:8px;font-family:'SF Mono',Menlo,monospace;font-size:12px;text-align:left;user-select:all;border:1px solid #1e293b}
+.fix{margin-top:12px;font-size:12px;color:#94a3b8;line-height:1.8}
+.fix ol{padding-left:16px}
+.fix li{margin-bottom:4px}
+.fix a{color:#2dd4bf}
+.fix code{background:#0f172a;padding:2px 6px;border-radius:4px;font-size:11px;color:#2dd4bf}
+.actions{display:flex;gap:8px;justify-content:center;margin-top:20px;flex-wrap:wrap}
 .btn{padding:10px 24px;border-radius:10px;font-size:14px;font-weight:500;border:none;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px}
 .btn:disabled{opacity:0.5;cursor:not-allowed}
-.btn-brand{background:#da7756;color:#fff}
-.btn-brand:hover:not(:disabled){background:#c96a4b}
-.btn-ghost{background:#f0ebe4;color:#1a1714}
-.btn-ghost:hover:not(:disabled){background:#e3e0d9}
-.btn-green{background:#2d8a56;color:#fff}
-.btn-green:hover:not(:disabled){background:#257a4a}
+.btn-brand{background:linear-gradient(135deg,#0d9488,#0f766e);color:#fff}
+.btn-brand:hover:not(:disabled){box-shadow:0 0 20px rgba(13,148,136,0.4)}
+.btn-ghost{background:#334155;color:#e2e8f0}
+.btn-ghost:hover:not(:disabled){background:#475569}
+.btn-green{background:linear-gradient(135deg,#059669,#047857);color:#fff}
+.btn-green:hover:not(:disabled){box-shadow:0 0 20px rgba(5,150,105,0.4)}
 .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:sp 0.6s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-
-/* Made in India */
-.india{position:fixed;bottom:12px;right:16px;display:flex;align-items:center;gap:6px;font-size:11px;color:#9b958e;opacity:0;animation:fadeUp 0.8s ease 1s both}
-.india-flag{font-size:14px}
+.powered{position:fixed;bottom:12px;left:16px;font-size:11px;color:#64748b;z-index:10}
+.powered a{color:#2dd4bf;text-decoration:none}
+.india{position:fixed;bottom:12px;right:16px;font-size:11px;color:#64748b;z-index:10}
 </style>
 </head>
 <body>
 <div class="titlebar"></div>
 <div class="main">
+<div class="bg-grid"></div>
 
-  <!-- Screen 1: Welcome -->
-  <div class="screen active" id="screen-welcome">
-    <div class="welcome">
-      <div class="avatar-wrap">
-        <div class="avatar-glow"></div>
-        <div class="avatar">
-          <div class="avatar-body">
-            <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Head -->
-              <rect x="30" y="10" width="60" height="50" rx="16" fill="#da7756"/>
-              <!-- Eyes -->
-              <circle cx="48" cy="32" r="5" fill="#fff"/>
-              <circle cx="72" cy="32" r="5" fill="#fff"/>
-              <circle cx="49" cy="33" r="2.5" fill="#1a1714"/>
-              <circle cx="73" cy="33" r="2.5" fill="#1a1714"/>
-              <!-- Smile -->
-              <path d="M50 44 Q60 52 70 44" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-              <!-- Antenna -->
-              <line x1="60" y1="10" x2="60" y2="2" stroke="#da7756" stroke-width="2.5" stroke-linecap="round"/>
-              <circle cx="60" cy="1" r="3" fill="#da7756"/>
-              <!-- Body -->
-              <rect x="38" y="62" width="44" height="30" rx="10" fill="#e8a88e"/>
-              <!-- Hands (namaste / closed together) -->
-              <path d="M38 72 Q28 72 26 80 Q24 88 32 90 L38 88" fill="#da7756" stroke="#c96a4b" stroke-width="1"/>
-              <path d="M82 72 Q92 72 94 80 Q96 88 88 90 L82 88" fill="#da7756" stroke="#c96a4b" stroke-width="1"/>
-              <!-- Hands meeting in center (namaste) -->
-              <path d="M50 92 Q60 100 70 92" stroke="#c96a4b" stroke-width="2" fill="none" stroke-linecap="round"/>
-              <ellipse cx="54" cy="94" rx="6" ry="8" fill="#da7756"/>
-              <ellipse cx="66" cy="94" rx="6" ry="8" fill="#da7756"/>
-              <!-- Chest light -->
-              <circle cx="60" cy="76" r="4" fill="#fff" opacity="0.6">
-                <animate attributeName="opacity" values="0.4;0.9;0.4" dur="2s" repeatCount="indefinite"/>
-              </circle>
-            </svg>
-          </div>
-        </div>
-      </div>
-      <h1>Welcome to AI Studio</h1>
-      <p class="subtitle">I'm your smart AI guide. Let's get everything set up.</p>
-      <div class="begin-btn">
-        <button class="btn btn-brand" onclick="startSetup()">Let's Begin →</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Screen 2: Setup Steps -->
-  <div class="screen" id="screen-setup">
-    <div class="setup">
-      <div class="setup-header">
-        <h2>Setting Up</h2>
-        <p id="step-label">Checking requirements...</p>
-      </div>
-
-      <div class="stepper" id="stepper"></div>
-      <div class="step-content" id="step-content"></div>
-      <div class="step-actions" id="step-actions"></div>
-    </div>
+<div class="screen active" id="screen-loading">
+  <div class="loading">
+    <div class="loading-ring"><svg viewBox="0 0 80 80" fill="none"><circle cx="40" cy="40" r="35" stroke="#334155" stroke-width="3"/><circle cx="40" cy="40" r="35" stroke="url(#g1)" stroke-width="3" stroke-linecap="round" stroke-dasharray="110 110"/><defs><linearGradient id="g1" x1="0" y1="0" x2="80" y2="80"><stop stop-color="#2dd4bf"/><stop offset="1" stop-color="#818cf8"/></linearGradient></defs></svg></div>
+    <h2>Initializing Velora AI</h2>
+    <p>Preparing your environment...</p>
   </div>
 </div>
 
-<!-- Made in India -->
-<div class="india">
-  <span class="india-flag">🇮🇳</span>
-  <span>Made in India</span>
+<div class="screen" id="screen-welcome">
+  <div class="welcome">
+    <div class="avatar"><div class="avatar-glow"></div><div class="avatar-body"><svg viewBox="0 0 100 100" fill="none"><rect x="25" y="8" width="50" height="42" rx="14" fill="#0d9488"/><circle cx="40" cy="26" r="4" fill="#fff"/><circle cx="60" cy="26" r="4" fill="#fff"/><circle cx="41" cy="27" r="2" fill="#0f172a"/><circle cx="61" cy="27" r="2" fill="#0f172a"/><path d="M42 38 Q50 45 58 38" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"/><rect x="32" y="52" width="36" height="26" rx="8" fill="#14b8a6"/><circle cx="50" cy="64" r="4" fill="#fff" opacity="0.5"><animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" repeatCount="indefinite"/></circle><ellipse cx="44" cy="82" rx="7" ry="9" fill="#0d9488"/><ellipse cx="56" cy="82" rx="7" ry="9" fill="#0d9488"/></svg></div></div>
+    <h1>Welcome to Velora AI</h1>
+    <p class="sub">Enterprise-grade private AI assistant. Let's get you set up — it only takes a minute.</p>
+    <div class="begin"><button class="btn btn-brand" onclick="startSetup()">Let's Begin →</button></div>
+  </div>
 </div>
+
+<div class="screen" id="screen-setup">
+  <div class="setup">
+    <div class="setup-top"><h2>Setup Wizard</h2><p id="setup-sub"></p></div>
+    <div class="stepper" id="stepper"></div>
+    <div class="card current" id="card"></div>
+    <div class="actions" id="actions"></div>
+  </div>
+</div>
+</div>
+
+<div class="powered">Powered by <a href="https://goelrah.github.io/" target="_blank">Rahul Goel</a></div>
+<div class="india">🇮🇳 Made in India</div>
 
 <script>
-const STEPS=[
-  {id:'node',title:'Node.js',desc:'JavaScript runtime',icon:'1'},
-  {id:'ollama',title:'Ollama',desc:'AI model engine',icon:'2'},
-  {id:'server',title:'Server',desc:'Ollama on port 11434',icon:'3'},
-  {id:'model',title:'AI Model',desc:'kimi-k2.5:cloud',icon:'4'},
-  {id:'ready',title:'Ready',desc:'All set!',icon:'5'},
+var STEPS=[
+  {id:'ollama',title:'Install Ollama',icon:'🦙',
+   desc:'Ollama is the AI engine that runs language models locally on your machine. No cloud, no API keys, no data sharing.',
+   why:'<b>Why Ollama?</b> It lets you run powerful AI models (like llama3, mistral, kimi) directly on your hardware. Your conversations stay 100% private — nothing is sent to any server.',
+   installMac:'brew install ollama',installWin:'winget install Ollama.Ollama',installLinux:'curl -fsSL https://ollama.com/install.sh | sh',
+   fix:['Visit <a href="https://ollama.com/download">ollama.com/download</a> and download for your OS','Run the installer','Come back and click <b>Re-check</b>']},
+  {id:'server',title:'Start Ollama Server',icon:'⚡',
+   desc:'The Ollama server needs to be running so Velora AI can communicate with it on your local machine.',
+   why:'<b>How it works:</b> Ollama runs a local server on port 11434. Velora AI sends your messages to this server, and Ollama processes them using the AI model. Everything happens on your machine.',
+   installMac:'OLLAMA_ORIGINS="*" ollama serve',installWin:'set OLLAMA_ORIGINS=* && ollama serve',installLinux:'OLLAMA_ORIGINS="*" ollama serve',
+   fix:['Open a <b>new terminal window</b> (keep it open)','Paste the command shown above and press Enter','The <code>OLLAMA_ORIGINS="*"</code> part allows Velora AI to connect','Come back and click <b>Re-check</b>']},
+  {id:'model',title:'Download AI Model',icon:'🧠',
+   desc:'Download the AI model that will power your assistant. This is a one-time download — the model runs locally after that.',
+   why:'<b>About the model:</b> kimi-k2.5:cloud is a powerful reasoning model that excels at code generation and analysis. You can add more models later from the Settings page (llama3, mistral, gemma, etc).',
+   installMac:'ollama pull kimi-k2.5:cloud',installWin:'ollama pull kimi-k2.5:cloud',installLinux:'ollama pull kimi-k2.5:cloud',
+   fix:['Make sure Ollama server is running (previous step)','Run <code>ollama pull kimi-k2.5:cloud</code> in a terminal','Wait for the download to finish','Alternative: <code>ollama pull llama3.1:8b</code> (smaller, faster)']},
+  {id:'ready',title:'You\'re All Set!',icon:'🚀',
+   desc:'Everything is configured. Your private AI coding assistant is ready.',
+   why:'<b>What you can do:</b> Ask coding questions, generate tests, review code, debug errors, write documentation — all powered by AI running on your machine. No subscriptions, no limits, no data collection.',
+   fix:[]},
 ];
-const state=STEPS.map(()=>({status:'pending',msg:'',cmd:''}));
-let cur=0,platform='darwin';
 
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById('screen-'+id).classList.add('active');
-}
+var state=STEPS.map(function(){return{status:'pending',msg:''}});
+var cur=0,platform='darwin';
 
-function startSetup(){showScreen('setup');render();run()}
+function show(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});document.getElementById('screen-'+id).classList.add('active')}
+setTimeout(function(){show('welcome')},2000);
+function startSetup(){show('setup');render()}
 
 function render(){
-  // Stepper
-  let html='';
-  STEPS.forEach((s,i)=>{
-    const st=state[i].status;
-    const cls=st==='done'?'done':st==='fail'?'fail':i===cur?'active':'';
-    const txt=st==='done'?'✓':st==='fail'?'✗':s.icon;
-    html+='<div class="stepper-step"><div class="stepper-circle '+cls+'">'+txt+'</div></div>';
-    if(i<STEPS.length-1) html+='<div class="stepper-line'+(state[i].status==='done'?' done':'')+'"></div>';
+  var h='';
+  STEPS.forEach(function(s,i){
+    var st=state[i].status;
+    var c=st==='done'?'done':st==='fail'?'fail':i===cur?'active':'';
+    var t=st==='done'?'✓':st==='fail'?'✗':s.icon;
+    h+='<div class="sc '+c+'" onclick="goTo('+i+')">'+t+'</div>';
+    if(i<STEPS.length-1)h+='<div class="sl'+(state[i].status==='done'?' done':'')+'"></div>';
   });
-  document.getElementById('stepper').innerHTML=html;
+  document.getElementById('stepper').innerHTML=h;
+  document.getElementById('setup-sub').textContent='Step '+(cur+1)+' of '+STEPS.length+' — '+STEPS[cur].title;
 
-  // Content
-  const s=STEPS[cur],st=state[cur];
-  let content='<h3>'+s.title+'</h3><p class="desc">'+s.desc+'</p>';
-  if(st.msg){
-    const c=st.status==='done'?'ok':st.status==='fail'?'err':'loading';
-    content+='<div class="status-box '+c+'">'+st.msg+'</div>';
+  var s=STEPS[cur],st=state[cur];
+  var c='<h3>'+s.icon+' '+s.title+'</h3><p class="desc">'+s.desc+'</p><div class="why">'+s.why+'</div>';
+  if(st.msg){var cls=st.status==='done'?'ok':st.status==='fail'?'err':'loading';c+='<div class="status '+cls+'">'+st.msg+'</div>'}
+  if(st.status==='fail'){
+    var cmd=platform==='win32'?s.installWin:platform==='darwin'?s.installMac:s.installLinux;
+    if(cmd)c+='<div class="cmd">'+cmd+'</div>';
+    if(s.fix.length){c+='<div class="fix"><b style="color:#f1f5f9">How to fix:</b><ol>';s.fix.forEach(function(f){c+='<li>'+f+'</li>'});c+='</ol></div>'}
   }
-  if(st.cmd) content+='<div class="cmd-box">'+st.cmd+'</div>';
-  document.getElementById('step-content').innerHTML=content;
-  document.getElementById('step-label').textContent='Step '+(cur+1)+' of '+STEPS.length;
+  document.getElementById('card').innerHTML=c;
 
-  // Actions
-  let btns='';
+  // Buttons
+  var b='';
+  var canBack=cur>0;
+  var isLast=cur===STEPS.length-1;
+
   if(st.status==='loading'){
-    btns='<button class="btn btn-ghost" disabled><span class="spin"></span> Checking</button>';
-  }else if(st.status==='fail'){
-    btns='<button class="btn btn-brand" onclick="run()">Retry</button>';
-    if(STEPS[cur].id==='server') btns+=' <button class="btn btn-ghost" onclick="doStart()">Start Ollama</button>';
-  }else if(cur===STEPS.length-1&&st.status==='done'){
-    btns='<button class="btn btn-green" onclick="launch()">🚀 Launch AI Studio</button>';
-  }else if(st.status==='pending'){
-    btns='<button class="btn btn-brand" onclick="run()">Check</button>';
+    b='<button class="btn btn-ghost" disabled><span class="spin"></span> Checking...</button>';
+  } else if(isLast&&st.status==='done'){
+    if(canBack)b+='<button class="btn btn-ghost" onclick="goBack()">← Back</button>';
+    b+='<button class="btn btn-green" onclick="launch()">🚀 Launch Velora AI</button>';
+  } else {
+    if(canBack)b+='<button class="btn btn-ghost" onclick="goBack()">← Back</button>';
+    if(st.status==='pending')b+='<button class="btn btn-brand" onclick="run()">▶ Check</button>';
+    else if(st.status==='done')b+='<button class="btn btn-brand" onclick="goNext()">Next →</button>';
+    else if(st.status==='fail'){
+      b+='<button class="btn btn-brand" onclick="run()">🔄 Re-check</button>';
+      if(s.id==='server')b+='<button class="btn btn-ghost" onclick="autoStart()">⚡ Auto-start</button>';
+      else if(s.id==='model')b+='<button class="btn btn-ghost" onclick="autoPull()">📥 Auto-download</button>';
+    }
   }
-  document.getElementById('step-actions').innerHTML=btns;
+  document.getElementById('actions').innerHTML=b;
 }
 
-function set(i,status,msg,cmd){state[i]={status:status,msg:msg||'',cmd:cmd||''};render()}
-function next(){if(cur<STEPS.length-1){cur++;render();run()}}
+function set(i,s,m){state[i]={status:s,msg:m||''};render()}
+function goTo(i){if(i<=cur||state[i-1]&&state[i-1].status==='done'){cur=i;render()}}
+function goBack(){if(cur>0){cur--;render()}}
+function goNext(){if(cur<STEPS.length-1){cur++;render()}}
 
 async function run(){
   set(cur,'loading','Checking...');
-  const id=STEPS[cur].id;
-  if(id==='node'){
-    const r=await window.wizard.checkNode();
-    if(r.ok){set(cur,'done','Found '+r.version);setTimeout(next,500)}
-    else{const c=platform==='win32'?'winget install OpenJS.NodeJS.LTS':platform==='darwin'?'brew install node':'sudo apt install -y nodejs';set(cur,'fail','Not found',c)}
-  }else if(id==='ollama'){
-    const r=await window.wizard.checkOllama();
-    if(r.ok){set(cur,'done','Installed');setTimeout(next,500)}
-    else{const c=platform==='win32'?'winget install Ollama.Ollama':platform==='darwin'?'brew install ollama':'curl -fsSL https://ollama.com/install.sh | sh';set(cur,'fail','Not installed',c)}
-  }else if(id==='server'){
-    const r=await window.wizard.checkOllamaRunning();
-    if(r.ok){set(cur,'done','Running — '+r.models.length+' model(s)');setTimeout(next,500)}
-    else set(cur,'fail','Not running','ollama serve')
-  }else if(id==='model'){
-    const r=await window.wizard.checkOllamaRunning();
-    if(r.ok&&r.models.some(m=>m.includes('kimi-k2.5'))){set(cur,'done','Model ready');setTimeout(next,500)}
-    else{set(cur,'loading','Pulling model...');const p=await window.wizard.pullModel('kimi-k2.5:cloud');if(p.ok){set(cur,'done','Model ready');setTimeout(next,500)}else set(cur,'fail','Pull failed','ollama pull kimi-k2.5:cloud')}
-  }else if(id==='ready'){
-    set(cur,'done','Everything is ready!')
-  }
+  var s=STEPS[cur];
+  if(s.id==='ollama'){var r=await window.wizard.checkOllama();if(r.ok){set(cur,'done','✓ Ollama is installed and ready')}else{set(cur,'fail','Ollama is not installed on this machine.')}}
+  else if(s.id==='server'){var r=await window.wizard.checkOllamaRunning();if(r.ok){set(cur,'done','✓ Server running — '+r.models.length+' model(s) available')}else{set(cur,'fail','Ollama server is not running.')}}
+  else if(s.id==='model'){var r=await window.wizard.checkOllamaRunning();if(r.ok&&r.models.some(function(m){return m.includes('kimi-k2.5')||m.includes('llama')||m.includes('mistral')})){set(cur,'done','✓ AI model is ready')}else{set(cur,'fail','No AI model found.')}}
+  else if(s.id==='ready'){set(cur,'done','✓ Everything is ready! Click Launch to start.')}
 }
 
-async function doStart(){set(cur,'loading','Starting...');await window.wizard.startOllama();setTimeout(run,2000)}
+async function autoStart(){set(cur,'loading','Starting Ollama with CORS...');await window.wizard.startOllama();setTimeout(run,3000)}
+async function autoPull(){set(cur,'loading','Downloading model... This may take a few minutes.');var r=await window.wizard.pullModel('kimi-k2.5:cloud');if(r.ok)set(cur,'done','✓ Model downloaded');else set(cur,'fail','Download failed. Check internet connection.')}
 async function launch(){await window.wizard.completeSetup()}
 
-(async()=>{platform=await window.wizard.getPlatform();render()})();
+(async function(){platform=await window.wizard.getPlatform()})();
 </script>
 </body>
 </html>

@@ -31,3 +31,8 @@ npm-debug.log*
 
 # Lock files (keep root, ignore sub-projects)
 vscode-extension/package-lock.json
+
+# TypeScript build artifacts
+tsconfig.tsbuildinfo
+src/**/*.js
+src/**/*.vue.js

@@ -101,7 +101,7 @@ function isActive(path: string) {
     <!-- Header -->
     <div class="flex items-center justify-between p-2 pt-2">
       <router-link to="/" class="flex items-center gap-2 pl-2 h-8">
-        <span class="text-sm font-semibold" :style="{ color: 'var(--text-100)' }">Rahul Goel — AI Studio</span>
+        <span class="text-sm font-semibold" :style="{ color: 'var(--text-100)' }">{{ settings.agentName || 'Velora AI' }}</span>
       </router-link>
       <button class="flex h-8 w-8 items-center justify-center rounded-md transition group" title="Close sidebar" @click="togglePin">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" :style="{ color: 'var(--text-400)' }" class="group-hover:!text-[var(--text-100)] transition">

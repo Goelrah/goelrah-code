@@ -1,7 +1,7 @@
 {
-  "name": "rahulgoel-ai-studio-desktop",
+  "name": "velora-ai-studio",
   "version": "0.1.0",
-  "description": "Rahul Goel AI Studio — Desktop App",
+  "description": "Velora AI Studio — Enterprise Private AI Coding Assistant",
   "author": "Rahul Goel",
   "main": "main.js",
   "repository": {
@@ -16,8 +16,8 @@
     "build:linux": "electron-builder --linux"
   },
   "build": {
-    "appId": "com.rahulgoel.ai-studio",
-    "productName": "Rahul Goel AI Studio",
+    "appId": "com.rahulgoel.velora-ai",
+    "productName": "Velora AI Studio",
     "publish": null,
     "files": [
       "main.js",

@@ -1,47 +1,58 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  /* Light mode — goelrah.github.io inspired: dark navy + teal accents */
   :root {
-    /* Claude.com exact color system */
     --bg-000: #ffffff;
-    --bg-100: hsl(60, 11%, 95%);
-    --bg-200: hsl(48, 14%, 89%);
-    --bg-300: hsl(45, 12%, 84%);
-    --bg-400: hsl(42, 10%, 78%);
-    --border-200: hsl(45, 10%, 82%);
-    --border-300: hsl(48, 10%, 86%);
-    --text-000: hsl(30, 10%, 8%);
-    --text-100: hsl(30, 8%, 12%);
-    --text-200: hsl(30, 6%, 25%);
-    --text-300: hsl(30, 5%, 40%);
-    --text-400: hsl(30, 4%, 55%);
-    --text-500: hsl(30, 3%, 65%);
-    --accent-brand: hsl(18, 65%, 58%);
-    --accent-brand-hover: hsl(18, 65%, 50%);
-    --success: hsl(145, 50%, 36%);
-    --error: hsl(0, 60%, 50%);
+    --bg-100: #f0f4f8;
+    --bg-200: #e2e8f0;
+    --bg-300: #cbd5e1;
+    --bg-400: #94a3b8;
+    --border-200: #cbd5e1;
+    --border-300: #e2e8f0;
+    --text-000: #0f172a;
+    --text-100: #1e293b;
+    --text-200: #334155;
+    --text-300: #64748b;
+    --text-400: #94a3b8;
+    --text-500: #cbd5e1;
+    --accent-brand: #0d9488;
+    --accent-brand-hover: #0f766e;
+    --accent-brand-bg: rgba(13, 148, 136, 0.08);
+    --accent-secondary: #6366f1;
+    --success: #059669;
+    --error: #dc2626;
+    --warning: #d97706;
+    --gradient-start: #0f172a;
+    --gradient-end: #1e293b;
   }
 
+  /* Dark mode */
   .dark {
-    --bg-000: hsl(25, 12%, 18%);
-    --bg-100: hsl(25, 14%, 14%);
-    --bg-200: hsl(25, 12%, 20%);
-    --bg-300: hsl(25, 10%, 26%);
-    --bg-400: hsl(25, 8%, 32%);
-    --border-200: hsl(25, 8%, 28%);
-    --border-300: hsl(25, 8%, 24%);
-    --text-000: hsl(40, 20%, 95%);
-    --text-100: hsl(40, 15%, 90%);
-    --text-200: hsl(40, 10%, 75%);
-    --text-300: hsl(40, 6%, 58%);
-    --text-400: hsl(40, 4%, 45%);
-    --text-500: hsl(40, 3%, 38%);
-    --accent-brand: hsl(18, 60%, 62%);
-    --accent-brand-hover: hsl(18, 60%, 55%);
+    --bg-000: #0f172a;
+    --bg-100: #1e293b;
+    --bg-200: #334155;
+    --bg-300: #475569;
+    --bg-400: #64748b;
+    --border-200: #334155;
+    --border-300: #1e293b;
+    --text-000: #f8fafc;
+    --text-100: #f1f5f9;
+    --text-200: #e2e8f0;
+    --text-300: #94a3b8;
+    --text-400: #64748b;
+    --text-500: #475569;
+    --accent-brand: #2dd4bf;
+    --accent-brand-hover: #14b8a6;
+    --accent-brand-bg: rgba(45, 212, 191, 0.1);
+    --accent-secondary: #818cf8;
+    --success: #34d399;
+    --error: #f87171;
+    --warning: #fbbf24;
   }
 
   body {
@@ -53,18 +64,18 @@
   }
 
   * { border-color: var(--border-300); }
-
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border-200); border-radius: 3px; }
-  ::selection { background: hsla(18, 65%, 58%, 0.2); }
-}
-
-.font-display {
-  font-family: 'Playfair Display', Georgia, serif;
+  ::selection { background: rgba(13, 148, 136, 0.25); }
 }
 
 /* Electron: prevent drag region from blocking input */
 textarea, input, select, button, a, [contenteditable] {
   -webkit-app-region: no-drag;
+}
+
+.font-display {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
