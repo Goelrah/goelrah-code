@@ -7,8 +7,27 @@ on:
 permissions:
   contents: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
-  build:
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx vite build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: dist/
+
+  build-desktop:
+    needs: build-web
     strategy:
       fail-fast: false
       matrix:
@@ -27,13 +46,13 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 20
 
-      # Build Vue app
-      - run: npm ci
-      - run: npm run build
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: dist/
 
-      # Build Electron
       - name: Install Electron deps
         run: npm install
         working-directory: electron
@@ -45,7 +64,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: List output
-        run: ls -la electron/release/ || true
+        run: ls -R electron/release/ || true
         shell: bash
 
       - name: Upload release artifacts
@@ -55,21 +74,15 @@ jobs:
           body: |
             ## 🚀 Rahul Goel — AI Studio ${{ github.ref_name }}
 
-            Your own private AI coding assistant. Runs 100% on your machine.
+            Your own private AI coding assistant. 100% local. Free forever.
 
-            ### What's included
-            - 💬 Streaming chat with local AI models
-            - 🤖 Model selector (kimi-k2.5, llama3, mistral, gemma)
-            - 🧠 Smart thinking animation — see the AI reason in real-time
-            - ⌨️ Command palette, slash commands, keyboard shortcuts
-            - 📝 27 prompt templates
-            - 🌙 Dark & light mode
-            - 🧙 Built-in setup wizard
+            ### Download
+            Pick your platform from the assets below.
 
             ### First time?
-            1. Download for your platform below
-            2. Open the app — setup wizard guides you
-            3. Start chatting — no account, no cloud, no cost
+            1. Download and open the app
+            2. Setup wizard installs Ollama + AI model
+            3. Start chatting — no account needed
 
             > Start Ollama with `OLLAMA_ORIGINS="*" ollama serve`
 
@@ -77,9 +90,7 @@ jobs:
           files: |
             electron/release/*.dmg
             electron/release/*.exe
-            electron/release/*.msi
             electron/release/*.AppImage
-            electron/release/*.deb
             electron/release/*.zip
             electron/release/*.blockmap
         env:
