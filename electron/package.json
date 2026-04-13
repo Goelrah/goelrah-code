@@ -17,25 +17,42 @@
     "files": [
       "main.js",
       "preload.js",
-      "wizard.html",
-      "../dist/**/*"
+      "wizard.html"
+    ],
+    "extraResources": [
+      {
+        "from": "../dist",
+        "to": "dist",
+        "filter": ["**/*"]
+      }
     ],
     "directories": {
-      "output": "../release"
+      "output": "release"
     },
     "mac": {
       "category": "public.app-category.developer-tools",
-      "target": "dmg"
+      "target": [
+        { "target": "dmg", "arch": ["universal"] }
+      ]
     },
     "win": {
-      "target": "nsis"
+      "target": [
+        { "target": "nsis", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": true,
+      "allowToChangeInstallationDirectory": false
     },
     "linux": {
-      "target": "AppImage"
+      "target": [
+        { "target": "AppImage", "arch": ["x64"] }
+      ],
+      "category": "Development"
     }
   },
   "devDependencies": {
-    "electron": "^32.0.0",
-    "electron-builder": "^25.0.0"
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.0"
   }
 }

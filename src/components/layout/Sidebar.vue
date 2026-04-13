@@ -49,8 +49,8 @@ function isActive(path: string) {
   <!-- Collapsed bar (always visible) -->
   <nav
     v-if="!pinned"
-    class="fixed left-0 top-0 z-40 flex h-screen w-[3.25rem] flex-col items-center py-2 border-r"
-    :style="{ background: 'var(--bg-100)', borderColor: 'var(--border-300)' }"
+    class="fixed left-0 top-0 z-40 flex h-screen w-[3.25rem] flex-col items-center border-r"
+    :style="{ background: 'var(--bg-100)', borderColor: 'var(--border-300)', paddingTop: '38px' }"
   >
     <!-- Toggle open button -->
     <button
@@ -96,7 +96,7 @@ function isActive(path: string) {
 
   <!-- Expanded sidebar (pinned open) -->
   <div v-if="pinned" class="fixed left-0 top-0 z-40 flex h-screen w-[260px] flex-col border-r"
-    :style="{ background: 'linear-gradient(to top, hsla(48,14%,89%,0.3), var(--bg-100))', borderColor: 'var(--border-300)' }">
+    :style="{ background: 'linear-gradient(to top, hsla(48,14%,89%,0.3), var(--bg-100))', borderColor: 'var(--border-300)', paddingTop: '38px' }">
 
     <!-- Header -->
     <div class="flex items-center justify-between p-2 pt-2">

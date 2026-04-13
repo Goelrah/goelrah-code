@@ -89,9 +89,15 @@ cd goelrah-code
 
 ### Option C: Browser Only
 ```bash
+# Start Ollama with CORS enabled (required)
+OLLAMA_ORIGINS="*" ollama serve
+
+# In another terminal
 npm install && npm run dev
 ```
-Open http://localhost:5173 (requires Ollama running separately)
+Open http://localhost:5173
+
+> **Important:** Always start Ollama with `OLLAMA_ORIGINS="*"` so the browser can connect to it.
 
 ## How It Works
 

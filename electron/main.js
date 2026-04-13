@@ -1,11 +1,19 @@
-const { app, BrowserWindow, shell, ipcMain } = require('electron');
+const { app, BrowserWindow, shell, ipcMain, protocol } = require('electron');
 const path = require('path');
 const { execSync, spawn } = require('child_process');
 const fs = require('fs');
 const http = require('http');
+const url = require('url');
 
 let mainWindow;
 const SETUP_FLAG = path.join(app.getPath('userData'), '.setup-complete');
+
+function getDistPath() {
+  if (app.isPackaged) {
+    return path.join(process.resourcesPath, 'dist');
+  }
+  return path.join(__dirname, '..', 'dist');
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -15,12 +23,13 @@ function createWindow() {
     minHeight: 600,
     title: 'Rahul Goel — AI Studio',
     titleBarStyle: 'hiddenInset',
-    trafficLightPosition: { x: 12, y: 12 },
+    trafficLightPosition: { x: 12, y: 10 },
     backgroundColor: '#f4f3ef',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
+      webSecurity: false,
     },
   });
 
@@ -29,6 +38,11 @@ function createWindow() {
     loadApp();
   } else {
     mainWindow.loadFile(path.join(__dirname, 'wizard.html'));
+  }
+
+  // Open DevTools in dev mode for debugging
+  if (!app.isPackaged) {
+    mainWindow.webContents.openDevTools({ mode: 'detach' });
   }
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -40,18 +54,60 @@ function createWindow() {
 }
 
 function loadApp() {
-  if (app.isPackaged) {
-    mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
-  } else {
+  const distPath = getDistPath();
+  const indexPath = path.join(distPath, 'index.html');
+
+  if (!fs.existsSync(indexPath)) {
+    // Fallback: try dev server
     mainWindow.loadURL('http://localhost:5173');
+    return;
   }
+
+  // Serve dist via a tiny local HTTP server so Vue Router works
+  const mimeTypes = {
+    '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css',
+    '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png',
+    '.ico': 'image/x-icon', '.woff2': 'font/woff2', '.woff': 'font/woff',
+  };
+
+  const server = http.createServer((req, res) => {
+    let filePath = path.join(distPath, req.url === '/' ? 'index.html' : req.url);
+
+    // SPA fallback: if file doesn't exist, serve index.html
+    if (!fs.existsSync(filePath)) {
+      filePath = indexPath;
+    }
+
+    const ext = path.extname(filePath);
+    const contentType = mimeTypes[ext] || 'application/octet-stream';
+
+    try {
+      const content = fs.readFileSync(filePath);
+      res.writeHead(200, {
+        'Content-Type': contentType,
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(content);
+    } catch {
+      res.writeHead(404);
+      res.end('Not found');
+    }
+  });
+
+  server.listen(0, '127.0.0.1', () => {
+    const port = server.address().port;
+    mainWindow.loadURL(`http://127.0.0.1:${port}`);
+  });
+
+  // Clean up server on window close
+  mainWindow.on('closed', () => { server.close(); });
 }
 
 // ─── IPC Handlers for wizard steps ───
 
 ipcMain.handle('check-node', async () => {
   try {
-    const ver = execSync('node -v', { encoding: 'utf8' }).trim();
+    const ver = execSync('node -v', { encoding: 'utf8', timeout: 5000 }).trim();
     return { ok: true, version: ver };
   } catch {
     return { ok: false, error: 'Node.js not found' };
@@ -60,7 +116,7 @@ ipcMain.handle('check-node', async () => {
 
 ipcMain.handle('check-ollama', async () => {
   try {
-    const ver = execSync('ollama --version', { encoding: 'utf8' }).trim();
+    const ver = execSync('ollama --version', { encoding: 'utf8', timeout: 5000 }).trim();
     return { ok: true, version: ver };
   } catch {
     return { ok: false, error: 'Ollama not installed' };
@@ -89,9 +145,12 @@ ipcMain.handle('check-ollama-running', async () => {
 
 ipcMain.handle('start-ollama', async () => {
   try {
-    const child = spawn('ollama', ['serve'], { detached: true, stdio: 'ignore' });
+    const child = spawn('ollama', ['serve'], {
+      detached: true,
+      stdio: 'ignore',
+      env: { ...process.env, OLLAMA_ORIGINS: '*' },
+    });
     child.unref();
-    // Wait for it to start
     await new Promise(r => setTimeout(r, 3000));
     return { ok: true };
   } catch (e) {
@@ -126,9 +185,9 @@ ipcMain.handle('reset-setup', async () => {
 });
 
 ipcMain.handle('get-platform', async () => {
-  return process.platform; // 'darwin', 'win32', 'linux'
+  return process.platform;
 });
 
 app.whenReady().then(createWindow);
-app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
+app.on('window-all-closed', () => { app.quit(); });
 app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });

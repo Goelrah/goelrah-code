@@ -1,5 +1,4 @@
 import { ref } from 'vue';
-import type { ChatMessage } from '@/types/chat';
 import { OllamaClient } from '@/services/ollama-client';
 import { useSettings } from './useSettings';
 import { useSessions } from './useSessions';
@@ -14,78 +13,57 @@ export function useChat() {
 
   function send(content: string) {
     if (streaming.value || !content.trim()) return;
-
     error.value = null;
 
-    // Ensure we have an active session
     let session = activeSession.value;
-    if (!session) {
-      session = createSession(settings.model);
-    }
-
+    if (!session) session = createSession(settings.model);
     const sessionId = session.id;
 
-    // Add user message
-    const userMsg: ChatMessage = {
-      id: crypto.randomUUID(),
-      role: 'user',
-      content: content.trim(),
-      timestamp: Date.now(),
-    };
-    addMessage(sessionId, userMsg);
-
-    // Add placeholder assistant message
-    const assistantMsg: ChatMessage = {
-      id: crypto.randomUUID(),
-      role: 'assistant',
-      content: '',
-      timestamp: Date.now(),
-      model: settings.model,
-    };
-    addMessage(sessionId, assistantMsg);
-
-    // Build messages array for Ollama
-    const messages: Array<{ role: string; content: string }> = [];
-    if (settings.systemPrompt) {
-      messages.push({ role: 'system', content: settings.systemPrompt });
-    }
-    // Include conversation history
+    // Build Ollama messages BEFORE adding to UI
+    const ollamaMessages: Array<{ role: string; content: string }> = [];
+    if (settings.systemPrompt) ollamaMessages.push({ role: 'system', content: settings.systemPrompt });
     for (const msg of session.messages) {
-      if (msg.role === 'user' || msg.role === 'assistant') {
-        messages.push({ role: msg.role, content: msg.content });
+      if ((msg.role === 'user' || msg.role === 'assistant') && msg.content.trim()) {
+        ollamaMessages.push({ role: msg.role, content: msg.content });
       }
     }
+    ollamaMessages.push({ role: 'user', content: content.trim() });
+
+    // Add to UI
+    addMessage(sessionId, { id: crypto.randomUUID(), role: 'user', content: content.trim(), timestamp: Date.now() });
+    addMessage(sessionId, { id: crypto.randomUUID(), role: 'assistant', content: '', timestamp: Date.now(), model: settings.model, isThinking: true, thinking: '' });
 
     streaming.value = true;
-    let accumulated = '';
+    let thinkingText = '';
+    let responseText = '';
+    let gotContent = false;
 
     const client = new OllamaClient(settings.endpointUrl);
     abortFn = client.streamChat(
-      {
-        model: settings.model,
-        messages,
-        stream: true,
-        options: {
-          temperature: settings.temperature,
-          num_predict: settings.maxTokens,
-        },
-      },
+      { model: settings.model, messages: ollamaMessages, stream: true, options: { temperature: settings.temperature, num_predict: settings.maxTokens } },
+      // onToken
       (token) => {
-        accumulated += token;
-        updateLastMessage(sessionId, accumulated);
+        if (!gotContent) gotContent = true;
+        responseText += token;
+        updateLastMessage(sessionId, responseText, thinkingText, false);
       },
+      // onDone
       () => {
+        if (!gotContent && thinkingText) updateLastMessage(sessionId, thinkingText, '', false);
         streaming.value = false;
         abortFn = null;
       },
+      // onError
       (err) => {
         error.value = err;
         streaming.value = false;
         abortFn = null;
-        // Mark the assistant message as error
-        if (!accumulated) {
-          updateLastMessage(sessionId, `Error: ${err}`);
-        }
+        if (!responseText && !thinkingText) updateLastMessage(sessionId, `Error: ${err}`, '', false);
+      },
+      // onThinking
+      (token) => {
+        thinkingText += token;
+        updateLastMessage(sessionId, '', thinkingText, true);
       },
     );
   }

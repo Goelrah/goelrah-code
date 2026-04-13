@@ -63,3 +63,8 @@
 .font-display {
   font-family: 'Playfair Display', Georgia, serif;
 }
+
+/* Electron: prevent drag region from blocking input */
+textarea, input, select, button, a, [contenteditable] {
+  -webkit-app-region: no-drag;
+}

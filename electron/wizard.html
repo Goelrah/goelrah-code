@@ -1,226 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Rahul Goel — AI Studio Setup</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f3ef; color: #1a1714; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-    .wizard { max-width: 560px; width: 100%; padding: 40px; }
-    .brand { text-align: center; margin-bottom: 32px; }
-    .brand h1 { font-size: 24px; font-weight: 600; color: #1a1714; }
-    .brand p { font-size: 14px; color: #9b958e; margin-top: 4px; }
+<meta charset="UTF-8">
+<title>Rahul Goel — AI Studio</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f3ef;color:#1a1714;height:100vh;overflow:hidden;display:flex;flex-direction:column;-webkit-app-region:drag}
+button,a,input{-webkit-app-region:no-drag}
+.titlebar{height:38px;flex-shrink:0}
+.main{flex:1;display:flex;align-items:center;justify-content:center;position:relative}
 
-    .stepper { display: flex; gap: 8px; margin-bottom: 32px; }
-    .step-dot { flex: 1; height: 4px; border-radius: 2px; background: #e3e0d9; transition: background 0.3s; }
-    .step-dot.done { background: #2d8a56; }
-    .step-dot.active { background: #da7756; }
-    .step-dot.fail { background: #d14343; }
+/* ─── Screens ─── */
+.screen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.6s ease,transform 0.6s ease;transform:translateY(20px)}
+.screen.active{opacity:1;pointer-events:auto;transform:translateY(0)}
 
-    .step-card { background: #fff; border: 1px solid #e3e0d9; border-radius: 16px; padding: 24px; margin-bottom: 16px; }
-    .step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-    .step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
-    .step-num.pending { background: #e3e0d9; color: #9b958e; }
-    .step-num.active { background: #da7756; color: #fff; }
-    .step-num.done { background: #2d8a56; color: #fff; }
-    .step-num.fail { background: #d14343; color: #fff; }
-    .step-title { font-size: 15px; font-weight: 600; }
-    .step-desc { font-size: 13px; color: #6b6560; line-height: 1.5; }
-    .step-status { margin-top: 10px; font-size: 13px; padding: 8px 12px; border-radius: 8px; }
-    .step-status.ok { background: #ecfdf5; color: #166534; }
-    .step-status.err { background: #fef2f2; color: #991b1b; }
-    .step-status.loading { background: #fffbeb; color: #92400e; }
+/* ─── Welcome Screen ─── */
+.welcome{text-align:center;max-width:400px;padding:20px}
+.avatar-wrap{position:relative;display:inline-block;margin-bottom:20px}
+.avatar{width:120px;height:120px;position:relative}
+.avatar-body{width:100%;height:100%;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.avatar svg{width:100%;height:100%}
+.avatar-glow{position:absolute;inset:-20px;border-radius:50%;background:radial-gradient(circle,rgba(218,119,86,0.15) 0%,transparent 70%);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:0.5;transform:scale(0.95)}50%{opacity:1;transform:scale(1.05)}}
+.welcome h1{font-size:22px;font-weight:600;animation:fadeUp 0.8s ease 0.3s both}
+.welcome .subtitle{font-size:14px;color:#9b958e;margin-top:8px;animation:fadeUp 0.8s ease 0.5s both}
+.welcome .begin-btn{margin-top:28px;animation:fadeUp 0.8s ease 0.7s both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-    .cmd-box { margin-top: 10px; background: #1a1714; color: #e3e0d9; padding: 10px 14px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; overflow-x: auto; }
+/* ─── Setup Screen ─── */
+.setup{width:100%;max-width:520px;padding:20px}
+.setup-header{text-align:center;margin-bottom:24px}
+.setup-header h2{font-size:18px;font-weight:600}
+.setup-header p{font-size:13px;color:#9b958e;margin-top:4px}
 
-    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 24px; border-radius: 10px; font-size: 14px; font-weight: 500; border: none; cursor: pointer; transition: all 0.2s; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-primary { background: #da7756; color: #fff; }
-    .btn-primary:hover:not(:disabled) { background: #c96a4b; }
-    .btn-secondary { background: #e3e0d9; color: #1a1714; }
-    .btn-secondary:hover:not(:disabled) { background: #d5d1ca; }
-    .btn-success { background: #2d8a56; color: #fff; }
-    .btn-success:hover:not(:disabled) { background: #257a4a; }
+/* Stepper */
+.stepper{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:28px}
+.stepper-step{display:flex;align-items:center}
+.stepper-circle{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;transition:all 0.4s ease;border:2px solid #e3e0d9;background:#fff;color:#9b958e}
+.stepper-circle.active{border-color:#da7756;background:#da7756;color:#fff;box-shadow:0 0 0 4px rgba(218,119,86,0.15)}
+.stepper-circle.done{border-color:#2d8a56;background:#2d8a56;color:#fff}
+.stepper-circle.fail{border-color:#d14343;background:#d14343;color:#fff}
+.stepper-line{width:40px;height:2px;background:#e3e0d9;transition:background 0.4s}
+.stepper-line.done{background:#2d8a56}
 
-    .actions { display: flex; gap: 10px; margin-top: 24px; justify-content: center; }
-    .hidden { display: none; }
-    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; margin-right: 6px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-  </style>
+/* Step content */
+.step-content{background:#fff;border:1px solid #e3e0d9;border-radius:16px;padding:24px;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transition:all 0.3s}
+.step-content h3{font-size:16px;font-weight:600;margin-bottom:4px}
+.step-content .desc{font-size:13px;color:#9b958e}
+.status-box{margin-top:14px;font-size:13px;padding:8px 16px;border-radius:8px;max-width:100%;word-break:break-word}
+.status-box.ok{background:#ecfdf5;color:#166534}
+.status-box.err{background:#fef2f2;color:#991b1b}
+.status-box.loading{background:#fffbeb;color:#92400e}
+.cmd-box{margin-top:10px;background:#1a1714;color:#e3e0d9;padding:10px 14px;border-radius:8px;font-family:'SF Mono',Menlo,monospace;font-size:12px;text-align:left;user-select:all;max-width:100%;overflow-x:auto}
+
+.step-actions{display:flex;gap:8px;justify-content:center;margin-top:20px}
+
+/* Buttons */
+.btn{padding:10px 24px;border-radius:10px;font-size:14px;font-weight:500;border:none;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.btn-brand{background:#da7756;color:#fff}
+.btn-brand:hover:not(:disabled){background:#c96a4b}
+.btn-ghost{background:#f0ebe4;color:#1a1714}
+.btn-ghost:hover:not(:disabled){background:#e3e0d9}
+.btn-green{background:#2d8a56;color:#fff}
+.btn-green:hover:not(:disabled){background:#257a4a}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:sp 0.6s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Made in India */
+.india{position:fixed;bottom:12px;right:16px;display:flex;align-items:center;gap:6px;font-size:11px;color:#9b958e;opacity:0;animation:fadeUp 0.8s ease 1s both}
+.india-flag{font-size:14px}
+</style>
 </head>
 <body>
-  <div class="wizard">
-    <div class="brand">
-      <h1>Rahul Goel — AI Studio</h1>
-      <p>Setup Wizard</p>
+<div class="titlebar"></div>
+<div class="main">
+
+  <!-- Screen 1: Welcome -->
+  <div class="screen active" id="screen-welcome">
+    <div class="welcome">
+      <div class="avatar-wrap">
+        <div class="avatar-glow"></div>
+        <div class="avatar">
+          <div class="avatar-body">
+            <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Head -->
+              <rect x="30" y="10" width="60" height="50" rx="16" fill="#da7756"/>
+              <!-- Eyes -->
+              <circle cx="48" cy="32" r="5" fill="#fff"/>
+              <circle cx="72" cy="32" r="5" fill="#fff"/>
+              <circle cx="49" cy="33" r="2.5" fill="#1a1714"/>
+              <circle cx="73" cy="33" r="2.5" fill="#1a1714"/>
+              <!-- Smile -->
+              <path d="M50 44 Q60 52 70 44" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+              <!-- Antenna -->
+              <line x1="60" y1="10" x2="60" y2="2" stroke="#da7756" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="60" cy="1" r="3" fill="#da7756"/>
+              <!-- Body -->
+              <rect x="38" y="62" width="44" height="30" rx="10" fill="#e8a88e"/>
+              <!-- Hands (namaste / closed together) -->
+              <path d="M38 72 Q28 72 26 80 Q24 88 32 90 L38 88" fill="#da7756" stroke="#c96a4b" stroke-width="1"/>
+              <path d="M82 72 Q92 72 94 80 Q96 88 88 90 L82 88" fill="#da7756" stroke="#c96a4b" stroke-width="1"/>
+              <!-- Hands meeting in center (namaste) -->
+              <path d="M50 92 Q60 100 70 92" stroke="#c96a4b" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <ellipse cx="54" cy="94" rx="6" ry="8" fill="#da7756"/>
+              <ellipse cx="66" cy="94" rx="6" ry="8" fill="#da7756"/>
+              <!-- Chest light -->
+              <circle cx="60" cy="76" r="4" fill="#fff" opacity="0.6">
+                <animate attributeName="opacity" values="0.4;0.9;0.4" dur="2s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <h1>Welcome to AI Studio</h1>
+      <p class="subtitle">I'm your smart AI guide. Let's get everything set up.</p>
+      <div class="begin-btn">
+        <button class="btn btn-brand" onclick="startSetup()">Let's Begin →</button>
+      </div>
     </div>
-
-    <!-- Progress dots -->
-    <div class="stepper" id="stepper"></div>
-
-    <!-- Steps container -->
-    <div id="steps"></div>
-
-    <!-- Actions -->
-    <div class="actions" id="actions"></div>
   </div>
 
-  <script>
-    const STEPS = [
-      { id: 'node', title: 'Node.js', desc: 'Required to run the application.' },
-      { id: 'ollama-install', title: 'Ollama Installed', desc: 'AI model runtime.' },
-      { id: 'ollama-running', title: 'Ollama Server Running', desc: 'Listening on localhost:11434.' },
-      { id: 'model', title: 'Model Ready', desc: 'kimi-k2.5:cloud model pulled.' },
-      { id: 'launch', title: 'Launch AI Studio', desc: 'Everything is ready!' },
-    ];
+  <!-- Screen 2: Setup Steps -->
+  <div class="screen" id="screen-setup">
+    <div class="setup">
+      <div class="setup-header">
+        <h2>Setting Up</h2>
+        <p id="step-label">Checking requirements...</p>
+      </div>
 
-    const state = STEPS.map(() => ({ status: 'pending', message: '' }));
-    let currentStep = 0;
-    let platform = 'darwin';
+      <div class="stepper" id="stepper"></div>
+      <div class="step-content" id="step-content"></div>
+      <div class="step-actions" id="step-actions"></div>
+    </div>
+  </div>
+</div>
 
-    function render() {
-      // Stepper dots
-      const stepper = document.getElementById('stepper');
-      stepper.innerHTML = STEPS.map((_, i) => {
-        const s = state[i].status;
-        const cls = s === 'done' ? 'done' : s === 'fail' ? 'fail' : i === currentStep ? 'active' : '';
-        return `<div class="step-dot ${cls}"></div>`;
-      }).join('');
+<!-- Made in India -->
+<div class="india">
+  <span class="india-flag">🇮🇳</span>
+  <span>Made in India</span>
+</div>
 
-      // Step cards
-      const container = document.getElementById('steps');
-      container.innerHTML = STEPS.map((step, i) => {
-        const s = state[i];
-        const numCls = s.status === 'done' ? 'done' : s.status === 'fail' ? 'fail' : i === currentStep ? 'active' : 'pending';
-        const numText = s.status === 'done' ? '✓' : s.status === 'fail' ? '✗' : (i + 1);
-        const statusHtml = s.message ? `<div class="step-status ${s.status === 'done' ? 'ok' : s.status === 'fail' ? 'err' : 'loading'}">${s.message}</div>` : '';
-        const cmdHtml = s.status === 'fail' && s.cmd ? `<div class="cmd-box">${s.cmd}</div>` : '';
-        return `
-          <div class="step-card" style="opacity: ${i <= currentStep ? 1 : 0.4}">
-            <div class="step-header">
-              <div class="step-num ${numCls}">${numText}</div>
-              <div class="step-title">${step.title}</div>
-            </div>
-            <div class="step-desc">${step.desc}</div>
-            ${statusHtml}
-            ${cmdHtml}
-          </div>
-        `;
-      }).join('');
+<script>
+const STEPS=[
+  {id:'node',title:'Node.js',desc:'JavaScript runtime',icon:'1'},
+  {id:'ollama',title:'Ollama',desc:'AI model engine',icon:'2'},
+  {id:'server',title:'Server',desc:'Ollama on port 11434',icon:'3'},
+  {id:'model',title:'AI Model',desc:'kimi-k2.5:cloud',icon:'4'},
+  {id:'ready',title:'Ready',desc:'All set!',icon:'5'},
+];
+const state=STEPS.map(()=>({status:'pending',msg:'',cmd:''}));
+let cur=0,platform='darwin';
 
-      // Actions
-      const actions = document.getElementById('actions');
-      const s = state[currentStep];
-      if (currentStep >= STEPS.length) {
-        actions.innerHTML = '';
-      } else if (s.status === 'loading') {
-        actions.innerHTML = `<button class="btn btn-secondary" disabled><span class="spinner"></span>Checking...</button>`;
-      } else if (s.status === 'fail') {
-        actions.innerHTML = `<button class="btn btn-primary" onclick="runStep(${currentStep})">Retry</button>`;
-        if (STEPS[currentStep].id === 'ollama-running') {
-          actions.innerHTML += `<button class="btn btn-secondary" onclick="startOllama()">Start Ollama</button>`;
-        }
-      } else if (s.status === 'done' && currentStep === STEPS.length - 1) {
-        actions.innerHTML = `<button class="btn btn-success" onclick="launch()">🚀 Launch AI Studio</button>`;
-      } else if (s.status === 'pending') {
-        actions.innerHTML = `<button class="btn btn-primary" onclick="runStep(${currentStep})">Check</button>`;
-      } else {
-        actions.innerHTML = `<button class="btn btn-primary" onclick="nextStep()">Next</button>`;
-      }
-    }
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+}
 
-    function setStatus(step, status, message, cmd) {
-      state[step] = { status, message, cmd: cmd || '' };
-      render();
-    }
+function startSetup(){showScreen('setup');render();run()}
 
-    function nextStep() {
-      if (currentStep < STEPS.length - 1) {
-        currentStep++;
-        render();
-        runStep(currentStep);
-      }
-    }
+function render(){
+  // Stepper
+  let html='';
+  STEPS.forEach((s,i)=>{
+    const st=state[i].status;
+    const cls=st==='done'?'done':st==='fail'?'fail':i===cur?'active':'';
+    const txt=st==='done'?'✓':st==='fail'?'✗':s.icon;
+    html+='<div class="stepper-step"><div class="stepper-circle '+cls+'">'+txt+'</div></div>';
+    if(i<STEPS.length-1) html+='<div class="stepper-line'+(state[i].status==='done'?' done':'')+'"></div>';
+  });
+  document.getElementById('stepper').innerHTML=html;
 
-    async function runStep(step) {
-      setStatus(step, 'loading', 'Checking...');
+  // Content
+  const s=STEPS[cur],st=state[cur];
+  let content='<h3>'+s.title+'</h3><p class="desc">'+s.desc+'</p>';
+  if(st.msg){
+    const c=st.status==='done'?'ok':st.status==='fail'?'err':'loading';
+    content+='<div class="status-box '+c+'">'+st.msg+'</div>';
+  }
+  if(st.cmd) content+='<div class="cmd-box">'+st.cmd+'</div>';
+  document.getElementById('step-content').innerHTML=content;
+  document.getElementById('step-label').textContent='Step '+(cur+1)+' of '+STEPS.length;
 
-      switch (STEPS[step].id) {
-        case 'node': {
-          const r = await window.wizard.checkNode();
-          if (r.ok) {
-            setStatus(step, 'done', `Node.js ${r.version} found`);
-            setTimeout(nextStep, 500);
-          } else {
-            const cmd = platform === 'win32' ? 'winget install OpenJS.NodeJS.LTS' : platform === 'darwin' ? 'brew install node' : 'curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt install -y nodejs';
-            setStatus(step, 'fail', 'Node.js not found. Install it and retry.', cmd);
-          }
-          break;
-        }
-        case 'ollama-install': {
-          const r = await window.wizard.checkOllama();
-          if (r.ok) {
-            setStatus(step, 'done', `Ollama installed (${r.version})`);
-            setTimeout(nextStep, 500);
-          } else {
-            const cmd = platform === 'win32' ? 'winget install Ollama.Ollama' : platform === 'darwin' ? 'brew install ollama' : 'curl -fsSL https://ollama.com/install.sh | sh';
-            setStatus(step, 'fail', 'Ollama not found. Install it and retry.', cmd);
-          }
-          break;
-        }
-        case 'ollama-running': {
-          const r = await window.wizard.checkOllamaRunning();
-          if (r.ok) {
-            setStatus(step, 'done', `Ollama running — ${r.models.length} model(s) available`);
-            setTimeout(nextStep, 500);
-          } else {
-            const cmd = 'ollama serve';
-            setStatus(step, 'fail', 'Ollama not running. Start it or click "Start Ollama".', cmd);
-          }
-          break;
-        }
-        case 'model': {
-          // First check if model exists
-          const check = await window.wizard.checkOllamaRunning();
-          if (check.ok && check.models.some(m => m.includes('kimi-k2.5'))) {
-            setStatus(step, 'done', 'kimi-k2.5:cloud model ready');
-            setTimeout(nextStep, 500);
-          } else {
-            setStatus(step, 'loading', 'Pulling kimi-k2.5:cloud... This may take a minute.');
-            const r = await window.wizard.pullModel('kimi-k2.5:cloud');
-            if (r.ok) {
-              setStatus(step, 'done', 'kimi-k2.5:cloud model ready');
-              setTimeout(nextStep, 500);
-            } else {
-              setStatus(step, 'fail', 'Failed to pull model. Check your internet connection.', 'ollama pull kimi-k2.5:cloud');
-            }
-          }
-          break;
-        }
-        case 'launch': {
-          setStatus(step, 'done', 'All checks passed. Ready to launch!');
-          break;
-        }
-      }
-    }
+  // Actions
+  let btns='';
+  if(st.status==='loading'){
+    btns='<button class="btn btn-ghost" disabled><span class="spin"></span> Checking</button>';
+  }else if(st.status==='fail'){
+    btns='<button class="btn btn-brand" onclick="run()">Retry</button>';
+    if(STEPS[cur].id==='server') btns+=' <button class="btn btn-ghost" onclick="doStart()">Start Ollama</button>';
+  }else if(cur===STEPS.length-1&&st.status==='done'){
+    btns='<button class="btn btn-green" onclick="launch()">🚀 Launch AI Studio</button>';
+  }else if(st.status==='pending'){
+    btns='<button class="btn btn-brand" onclick="run()">Check</button>';
+  }
+  document.getElementById('step-actions').innerHTML=btns;
+}
 
-    async function startOllama() {
-      setStatus(currentStep, 'loading', 'Starting Ollama server...');
-      const r = await window.wizard.startOllama();
-      // Re-check after starting
-      setTimeout(() => runStep(currentStep), 2000);
-    }
+function set(i,status,msg,cmd){state[i]={status:status,msg:msg||'',cmd:cmd||''};render()}
+function next(){if(cur<STEPS.length-1){cur++;render();run()}}
 
-    async function launch() {
-      await window.wizard.completeSetup();
-    }
+async function run(){
+  set(cur,'loading','Checking...');
+  const id=STEPS[cur].id;
+  if(id==='node'){
+    const r=await window.wizard.checkNode();
+    if(r.ok){set(cur,'done','Found '+r.version);setTimeout(next,500)}
+    else{const c=platform==='win32'?'winget install OpenJS.NodeJS.LTS':platform==='darwin'?'brew install node':'sudo apt install -y nodejs';set(cur,'fail','Not found',c)}
+  }else if(id==='ollama'){
+    const r=await window.wizard.checkOllama();
+    if(r.ok){set(cur,'done','Installed');setTimeout(next,500)}
+    else{const c=platform==='win32'?'winget install Ollama.Ollama':platform==='darwin'?'brew install ollama':'curl -fsSL https://ollama.com/install.sh | sh';set(cur,'fail','Not installed',c)}
+  }else if(id==='server'){
+    const r=await window.wizard.checkOllamaRunning();
+    if(r.ok){set(cur,'done','Running — '+r.models.length+' model(s)');setTimeout(next,500)}
+    else set(cur,'fail','Not running','ollama serve')
+  }else if(id==='model'){
+    const r=await window.wizard.checkOllamaRunning();
+    if(r.ok&&r.models.some(m=>m.includes('kimi-k2.5'))){set(cur,'done','Model ready');setTimeout(next,500)}
+    else{set(cur,'loading','Pulling model...');const p=await window.wizard.pullModel('kimi-k2.5:cloud');if(p.ok){set(cur,'done','Model ready');setTimeout(next,500)}else set(cur,'fail','Pull failed','ollama pull kimi-k2.5:cloud')}
+  }else if(id==='ready'){
+    set(cur,'done','Everything is ready!')
+  }
+}
 
-    // Init
-    (async () => {
-      platform = await window.wizard.getPlatform();
-      render();
-      runStep(0);
-    })();
-  </script>
+async function doStart(){set(cur,'loading','Starting...');await window.wizard.startOllama();setTimeout(run,2000)}
+async function launch(){await window.wizard.completeSetup()}
+
+(async()=>{platform=await window.wizard.getPlatform();render()})();
+</script>
 </body>
 </html>

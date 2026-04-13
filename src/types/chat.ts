@@ -5,6 +5,8 @@ export interface ChatMessage {
   timestamp: number;
   model?: string;
   error?: boolean;
+  thinking?: string;
+  isThinking?: boolean;
 }
 
 export interface ChatRequest {
@@ -20,7 +22,7 @@ export interface ChatRequest {
 
 export interface OllamaStreamChunk {
   model: string;
-  message: { role: string; content: string };
+  message: { role: string; content: string; thinking?: string };
   done: boolean;
   total_duration?: number;
   eval_count?: number;

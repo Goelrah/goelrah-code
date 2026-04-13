@@ -108,7 +108,7 @@ if curl -s --max-time 3 http://localhost:11434/api/tags > /dev/null 2>&1; then
   print_ok "Ollama is already running on localhost:11434"
 else
   print_warn "Ollama not running. Starting in background..."
-  ollama serve &> /dev/null &
+  OLLAMA_ORIGINS="*" ollama serve &> /dev/null &
   OLLAMA_PID=$!
   sleep 3
 

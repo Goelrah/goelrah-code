@@ -20,6 +20,7 @@ export class OllamaClient {
     onToken: (token: string) => void,
     onDone: (meta?: { totalDuration?: number; evalCount?: number }) => void,
     onError: (error: string) => void,
+    onThinking?: (token: string) => void,
   ): () => void {
     const controller = new AbortController();
 
@@ -59,12 +60,17 @@ export class OllamaClient {
           const lines = buffer.split('\n');
           buffer = lines.pop() ?? '';
 
+          let hasContent = false;
+
           for (const line of lines) {
             if (!line.trim()) continue;
             try {
               const chunk: OllamaStreamChunk = JSON.parse(line);
               if (chunk.message?.content) {
+                hasContent = true;
                 onToken(chunk.message.content);
+              } else if (chunk.message?.thinking && onThinking) {
+                onThinking(chunk.message.thinking);
               }
               if (chunk.done) {
                 onDone({
@@ -165,9 +171,8 @@ export class OllamaClient {
 
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
-    // Merge headers — include bypass for localtunnel interstitial
+    // Merge headers
     const headers = new Headers(init.headers);
-    headers.set('Bypass-Tunnel-Reminder', 'true');
 
     try {
       return await fetch(url, { ...init, headers, signal: controller.signal });

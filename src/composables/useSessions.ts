@@ -50,12 +50,14 @@ export function useSessions() {
     persist();
   }
 
-  function updateLastMessage(sessionId: string, content: string) {
+  function updateLastMessage(sessionId: string, content: string, thinking?: string, isThinking?: boolean) {
     const session = sessions.value.find((s) => s.id === sessionId);
     if (!session || session.messages.length === 0) return;
     const last = session.messages[session.messages.length - 1];
     if (last) {
       last.content = content;
+      if (thinking !== undefined) last.thinking = thinking;
+      if (isThinking !== undefined) last.isThinking = isThinking;
     }
     persist();
   }
