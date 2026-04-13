@@ -22,7 +22,7 @@ import AppShell from '@/components/layout/AppShell.vue';
             </div>
           </div>
         </div>
-        <p class="mt-8 text-xs" :style="{ color: 'var(--text-500)' }">v0.1.0 · Powered by Rahul Goel — Independent Consultant</p>
+        <p class="mt-8 text-xs" :style="{ color: 'var(--text-500)' }">Powered by <a href="https://goelrah.github.io/" target="_blank" :style="{ color: 'var(--accent-brand)' }">Rahul Goel</a></p>
       </div>
     </div>
   </AppShell>

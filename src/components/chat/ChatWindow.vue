@@ -40,7 +40,7 @@ function handleSlashCommand(cmd: string) {
 
 function exportConversation() {
   if (!activeSession.value) return;
-  const lines = activeSession.value.messages.map((m) => `**${m.role === 'user' ? 'You' : 'AI Studio'}**\n\n${m.content}\n`);
+  const lines = activeSession.value.messages.map((m) => `**${m.role === 'user' ? 'You' : settings.agentName}**\n\n${m.content}\n`);
   const blob = new Blob([`# ${activeSession.value.title}\n\n${lines.join('\n---\n\n')}`], { type: 'text/markdown' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);

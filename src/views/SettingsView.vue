@@ -24,6 +24,16 @@ async function fetchModels() {
       <div class="mx-auto max-w-2xl px-4 py-8">
         <h1 class="text-lg font-semibold" :style="{ color: 'var(--text-100)' }">Settings</h1>
         <div class="mt-6 space-y-6">
+          <!-- Agent Name -->
+          <div class="rounded-xl border p-4" :style="{ background: 'var(--bg-000)', borderColor: 'var(--border-300)' }">
+            <label class="text-sm font-medium" :style="{ color: 'var(--text-100)' }">Agent Name</label>
+            <p class="text-xs mt-1" :style="{ color: 'var(--text-400)' }">Give your AI assistant a custom name</p>
+            <input v-model="settings.agentName" type="text" placeholder="AI Studio"
+              class="mt-2 w-full rounded-lg border px-3 py-2 text-sm focus:outline-none"
+              :style="{ background: 'var(--bg-000)', borderColor: 'var(--border-300)', color: 'var(--text-100)' }" />
+          </div>
+
+          <!-- Endpoint -->
           <div class="rounded-xl border p-4" :style="{ background: 'var(--bg-000)', borderColor: 'var(--border-300)' }">
             <label class="text-sm font-medium" :style="{ color: 'var(--text-100)' }">Endpoint URL</label>
             <input v-model="settings.endpointUrl" type="url"
@@ -80,7 +90,7 @@ async function fetchModels() {
           <button class="rounded-lg border px-4 py-2 text-sm transition"
             :style="{ borderColor: 'hsla(0,60%,50%,0.3)', color: 'var(--error)' }" @click="reset">Reset to Defaults</button>
         </div>
-        <p class="mt-8 text-xs" :style="{ color: 'var(--text-500)' }">AI Studio v0.1.0 · Powered by Rahul Goel</p>
+        <p class="mt-8 text-xs" :style="{ color: 'var(--text-500)' }">Powered by <a href="https://goelrah.github.io/" target="_blank" :style="{ color: 'var(--accent-brand)' }">Rahul Goel</a></p>
       </div>
     </div>
   </AppShell>

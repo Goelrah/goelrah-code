@@ -4,8 +4,10 @@ import type { ChatMessage } from '@/types/chat';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import ThinkingAnimation from './ThinkingAnimation.vue';
+import { useSettings } from '@/composables/useSettings';
 
 const props = defineProps<{ message: ChatMessage }>();
+const { settings } = useSettings();
 const isUser = computed(() => props.message.role === 'user');
 const copied = ref(false);
 
@@ -34,7 +36,7 @@ function copy() {
       <div class="min-w-0 flex-1">
         <div class="mb-1 flex items-center gap-2">
           <span class="text-sm font-semibold" :style="{ color: 'var(--text-100)' }">
-            {{ isUser ? 'You' : 'AI Studio' }}
+            {{ isUser ? 'You' : settings.agentName }}
           </span>
           <button
             v-if="message.content"

@@ -172,7 +172,7 @@ function isActive(path: string) {
         :style="{ background: 'var(--text-300)', color: 'var(--bg-100)' }">RG</div>
       <div class="flex flex-col min-w-0">
         <span class="truncate text-sm font-medium" :style="{ color: 'var(--text-100)' }">Rahul Goel</span>
-        <span class="truncate text-xs" :style="{ color: 'var(--text-500)' }">Independent Consultant</span>
+        <span class="truncate text-xs" :style="{ color: 'var(--text-500)' }"><a href="https://goelrah.github.io/" target="_blank" :style="{ color: 'var(--text-400)' }">goelrah.github.io</a></span>
       </div>
     </div>
   </div>

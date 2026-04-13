@@ -5,6 +5,7 @@ export interface AppSettings {
   temperature: number;
   maxTokens: number;
   theme: 'dark' | 'light';
+  agentName: string;
 }
 
 export interface ModelInfo {
