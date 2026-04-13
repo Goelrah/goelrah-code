@@ -26,14 +26,23 @@ jobs:
 
       - run: npm ci
 
-      - name: Build
+      # Build the Vue app
+      - name: Build app
         run: npm run build
         env:
           GITHUB_PAGES: true
 
+      # Merge landing site + app into one output
+      - name: Prepare Pages output
+        run: |
+          mkdir -p pages-output
+          cp site/index.html pages-output/index.html
+          cp site/favicon.svg pages-output/favicon.svg
+          cp -r dist pages-output/app
+
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: pages-output
 
   deploy:
     needs: build

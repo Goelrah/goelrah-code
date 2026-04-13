@@ -1,0 +1,41 @@
+{
+  "name": "rahulgoel-ai-studio-desktop",
+  "version": "0.1.0",
+  "description": "Rahul Goel AI Studio — Desktop App",
+  "author": "Rahul Goel",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win",
+    "build:linux": "electron-builder --linux"
+  },
+  "build": {
+    "appId": "com.rahulgoel.ai-studio",
+    "productName": "Rahul Goel AI Studio",
+    "files": [
+      "main.js",
+      "preload.js",
+      "wizard.html",
+      "../dist/**/*"
+    ],
+    "directories": {
+      "output": "../release"
+    },
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+  "devDependencies": {
+    "electron": "^32.0.0",
+    "electron-builder": "^25.0.0"
+  }
+}

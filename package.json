@@ -11,7 +11,10 @@
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.ts",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "vue-tsc --noEmit",
+    "electron:dev": "npm run dev & cd electron && npm run dev",
+    "electron:build": "npm run build && cd electron && npm run build:mac",
+    "electron:start": "npm run build && cd electron && npm start"
   },
   "dependencies": {
     "dompurify": "^3.1.0",

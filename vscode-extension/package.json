@@ -38,7 +38,7 @@
       "properties": {
         "aiStudio.endpointUrl": {
           "type": "string",
-          "default": "https://rahulollama.loca.lt",
+          "default": "http://localhost:11434",
           "description": "Ollama-compatible endpoint URL"
         },
         "aiStudio.model": {

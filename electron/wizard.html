@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rahul Goel — AI Studio Setup</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f3ef; color: #1a1714; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .wizard { max-width: 560px; width: 100%; padding: 40px; }
+    .brand { text-align: center; margin-bottom: 32px; }
+    .brand h1 { font-size: 24px; font-weight: 600; color: #1a1714; }
+    .brand p { font-size: 14px; color: #9b958e; margin-top: 4px; }
+
+    .stepper { display: flex; gap: 8px; margin-bottom: 32px; }
+    .step-dot { flex: 1; height: 4px; border-radius: 2px; background: #e3e0d9; transition: background 0.3s; }
+    .step-dot.done { background: #2d8a56; }
+    .step-dot.active { background: #da7756; }
+    .step-dot.fail { background: #d14343; }
+
+    .step-card { background: #fff; border: 1px solid #e3e0d9; border-radius: 16px; padding: 24px; margin-bottom: 16px; }
+    .step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+    .step-num.pending { background: #e3e0d9; color: #9b958e; }
+    .step-num.active { background: #da7756; color: #fff; }
+    .step-num.done { background: #2d8a56; color: #fff; }
+    .step-num.fail { background: #d14343; color: #fff; }
+    .step-title { font-size: 15px; font-weight: 600; }
+    .step-desc { font-size: 13px; color: #6b6560; line-height: 1.5; }
+    .step-status { margin-top: 10px; font-size: 13px; padding: 8px 12px; border-radius: 8px; }
+    .step-status.ok { background: #ecfdf5; color: #166534; }
+    .step-status.err { background: #fef2f2; color: #991b1b; }
+    .step-status.loading { background: #fffbeb; color: #92400e; }
+
+    .cmd-box { margin-top: 10px; background: #1a1714; color: #e3e0d9; padding: 10px 14px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; overflow-x: auto; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 24px; border-radius: 10px; font-size: 14px; font-weight: 500; border: none; cursor: pointer; transition: all 0.2s; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background: #da7756; color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: #c96a4b; }
+    .btn-secondary { background: #e3e0d9; color: #1a1714; }
+    .btn-secondary:hover:not(:disabled) { background: #d5d1ca; }
+    .btn-success { background: #2d8a56; color: #fff; }
+    .btn-success:hover:not(:disabled) { background: #257a4a; }
+
+    .actions { display: flex; gap: 10px; margin-top: 24px; justify-content: center; }
+    .hidden { display: none; }
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="wizard">
+    <div class="brand">
+      <h1>Rahul Goel — AI Studio</h1>
+      <p>Setup Wizard</p>
+    </div>
+
+    <!-- Progress dots -->
+    <div class="stepper" id="stepper"></div>
+
+    <!-- Steps container -->
+    <div id="steps"></div>
+
+    <!-- Actions -->
+    <div class="actions" id="actions"></div>
+  </div>
+
+  <script>
+    const STEPS = [
+      { id: 'node', title: 'Node.js', desc: 'Required to run the application.' },
+      { id: 'ollama-install', title: 'Ollama Installed', desc: 'AI model runtime.' },
+      { id: 'ollama-running', title: 'Ollama Server Running', desc: 'Listening on localhost:11434.' },
+      { id: 'model', title: 'Model Ready', desc: 'kimi-k2.5:cloud model pulled.' },
+      { id: 'launch', title: 'Launch AI Studio', desc: 'Everything is ready!' },
+    ];
+
+    const state = STEPS.map(() => ({ status: 'pending', message: '' }));
+    let currentStep = 0;
+    let platform = 'darwin';
+
+    function render() {
+      // Stepper dots
+      const stepper = document.getElementById('stepper');
+      stepper.innerHTML = STEPS.map((_, i) => {
+        const s = state[i].status;
+        const cls = s === 'done' ? 'done' : s === 'fail' ? 'fail' : i === currentStep ? 'active' : '';
+        return `<div class="step-dot ${cls}"></div>`;
+      }).join('');
+
+      // Step cards
+      const container = document.getElementById('steps');
+      container.innerHTML = STEPS.map((step, i) => {
+        const s = state[i];
+        const numCls = s.status === 'done' ? 'done' : s.status === 'fail' ? 'fail' : i === currentStep ? 'active' : 'pending';
+        const numText = s.status === 'done' ? '✓' : s.status === 'fail' ? '✗' : (i + 1);
+        const statusHtml = s.message ? `<div class="step-status ${s.status === 'done' ? 'ok' : s.status === 'fail' ? 'err' : 'loading'}">${s.message}</div>` : '';
+        const cmdHtml = s.status === 'fail' && s.cmd ? `<div class="cmd-box">${s.cmd}</div>` : '';
+        return `
+          <div class="step-card" style="opacity: ${i <= currentStep ? 1 : 0.4}">
+            <div class="step-header">
+              <div class="step-num ${numCls}">${numText}</div>
+              <div class="step-title">${step.title}</div>
+            </div>
+            <div class="step-desc">${step.desc}</div>
+            ${statusHtml}
+            ${cmdHtml}
+          </div>
+        `;
+      }).join('');
+
+      // Actions
+      const actions = document.getElementById('actions');
+      const s = state[currentStep];
+      if (currentStep >= STEPS.length) {
+        actions.innerHTML = '';
+      } else if (s.status === 'loading') {
+        actions.innerHTML = `<button class="btn btn-secondary" disabled><span class="spinner"></span>Checking...</button>`;
+      } else if (s.status === 'fail') {
+        actions.innerHTML = `<button class="btn btn-primary" onclick="runStep(${currentStep})">Retry</button>`;
+        if (STEPS[currentStep].id === 'ollama-running') {
+          actions.innerHTML += `<button class="btn btn-secondary" onclick="startOllama()">Start Ollama</button>`;
+        }
+      } else if (s.status === 'done' && currentStep === STEPS.length - 1) {
+        actions.innerHTML = `<button class="btn btn-success" onclick="launch()">🚀 Launch AI Studio</button>`;
+      } else if (s.status === 'pending') {
+        actions.innerHTML = `<button class="btn btn-primary" onclick="runStep(${currentStep})">Check</button>`;
+      } else {
+        actions.innerHTML = `<button class="btn btn-primary" onclick="nextStep()">Next</button>`;
+      }
+    }
+
+    function setStatus(step, status, message, cmd) {
+      state[step] = { status, message, cmd: cmd || '' };
+      render();
+    }
+
+    function nextStep() {
+      if (currentStep < STEPS.length - 1) {
+        currentStep++;
+        render();
+        runStep(currentStep);
+      }
+    }
+
+    async function runStep(step) {
+      setStatus(step, 'loading', 'Checking...');
+
+      switch (STEPS[step].id) {
+        case 'node': {
+          const r = await window.wizard.checkNode();
+          if (r.ok) {
+            setStatus(step, 'done', `Node.js ${r.version} found`);
+            setTimeout(nextStep, 500);
+          } else {
+            const cmd = platform === 'win32' ? 'winget install OpenJS.NodeJS.LTS' : platform === 'darwin' ? 'brew install node' : 'curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt install -y nodejs';
+            setStatus(step, 'fail', 'Node.js not found. Install it and retry.', cmd);
+          }
+          break;
+        }
+        case 'ollama-install': {
+          const r = await window.wizard.checkOllama();
+          if (r.ok) {
+            setStatus(step, 'done', `Ollama installed (${r.version})`);
+            setTimeout(nextStep, 500);
+          } else {
+            const cmd = platform === 'win32' ? 'winget install Ollama.Ollama' : platform === 'darwin' ? 'brew install ollama' : 'curl -fsSL https://ollama.com/install.sh | sh';
+            setStatus(step, 'fail', 'Ollama not found. Install it and retry.', cmd);
+          }
+          break;
+        }
+        case 'ollama-running': {
+          const r = await window.wizard.checkOllamaRunning();
+          if (r.ok) {
+            setStatus(step, 'done', `Ollama running — ${r.models.length} model(s) available`);
+            setTimeout(nextStep, 500);
+          } else {
+            const cmd = 'ollama serve';
+            setStatus(step, 'fail', 'Ollama not running. Start it or click "Start Ollama".', cmd);
+          }
+          break;
+        }
+        case 'model': {
+          // First check if model exists
+          const check = await window.wizard.checkOllamaRunning();
+          if (check.ok && check.models.some(m => m.includes('kimi-k2.5'))) {
+            setStatus(step, 'done', 'kimi-k2.5:cloud model ready');
+            setTimeout(nextStep, 500);
+          } else {
+            setStatus(step, 'loading', 'Pulling kimi-k2.5:cloud... This may take a minute.');
+            const r = await window.wizard.pullModel('kimi-k2.5:cloud');
+            if (r.ok) {
+              setStatus(step, 'done', 'kimi-k2.5:cloud model ready');
+              setTimeout(nextStep, 500);
+            } else {
+              setStatus(step, 'fail', 'Failed to pull model. Check your internet connection.', 'ollama pull kimi-k2.5:cloud');
+            }
+          }
+          break;
+        }
+        case 'launch': {
+          setStatus(step, 'done', 'All checks passed. Ready to launch!');
+          break;
+        }
+      }
+    }
+
+    async function startOllama() {
+      setStatus(currentStep, 'loading', 'Starting Ollama server...');
+      const r = await window.wizard.startOllama();
+      // Re-check after starting
+      setTimeout(() => runStep(currentStep), 2000);
+    }
+
+    async function launch() {
+      await window.wizard.completeSetup();
+    }
+
+    // Init
+    (async () => {
+      platform = await window.wizard.getPlatform();
+      render();
+      runStep(0);
+    })();
+  </script>
+</body>
+</html>

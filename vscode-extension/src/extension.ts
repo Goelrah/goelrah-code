@@ -7,7 +7,7 @@ let client: ApiClient;
 function getConfig() {
   const cfg = vscode.workspace.getConfiguration('aiStudio');
   return {
-    endpoint: cfg.get<string>('endpointUrl') ?? 'https://rahulollama.loca.lt',
+    endpoint: cfg.get<string>('endpointUrl') ?? 'http://localhost:11434',
     model: cfg.get<string>('model') ?? 'kimi-k2.5:cloud',
     systemPrompt: cfg.get<string>('systemPrompt') ?? '',
   };

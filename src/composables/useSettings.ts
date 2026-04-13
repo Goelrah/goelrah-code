@@ -3,7 +3,7 @@ import type { AppSettings } from '@/types/settings';
 import { storage } from '@/services/storage';
 
 const defaults: AppSettings = {
-  endpointUrl: import.meta.env.VITE_DEFAULT_ENDPOINT ?? 'https://rahulollama.loca.lt',
+  endpointUrl: import.meta.env.VITE_DEFAULT_ENDPOINT ?? 'http://localhost:11434',
   model: import.meta.env.VITE_DEFAULT_MODEL ?? 'kimi-k2.5:cloud',
   systemPrompt: 'You are Rahul Goel AI Studio, a private AI coding assistant. Be precise, concise, and technically accurate.',
   temperature: 0.7,

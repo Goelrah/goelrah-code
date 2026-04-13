@@ -159,15 +159,18 @@ export class OllamaClient {
     const controller = new AbortController();
     const existingSignal = init.signal;
 
-    // Combine abort signals
     if (existingSignal) {
       existingSignal.addEventListener('abort', () => controller.abort());
     }
 
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
+    // Merge headers — include bypass for localtunnel interstitial
+    const headers = new Headers(init.headers);
+    headers.set('Bypass-Tunnel-Reminder', 'true');
+
     try {
-      return await fetch(url, { ...init, signal: controller.signal });
+      return await fetch(url, { ...init, headers, signal: controller.signal });
     } finally {
       clearTimeout(timeout);
     }
