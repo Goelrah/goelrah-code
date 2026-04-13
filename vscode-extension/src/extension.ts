@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { ApiClient } from './api-client';
 import { handleSlashCommand } from './commands';
+import { VeloraSidebarProvider } from './sidebar-provider';
 
 let client: ApiClient;
 
@@ -72,6 +73,12 @@ export function activate(context: vscode.ExtensionContext) {
 
   participant.iconPath = vscode.Uri.joinPath(context.extensionUri, 'icon.png');
   context.subscriptions.push(participant);
+
+  // --- Sidebar ---
+  const sidebarProvider = new VeloraSidebarProvider(context.extensionUri, context.secrets);
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(VeloraSidebarProvider.viewType, sidebarProvider),
+  );
 
   // --- Commands ---
   context.subscriptions.push(

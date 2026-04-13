@@ -4,35 +4,90 @@
   "description": "Enterprise-grade private AI coding assistant — connects to your local Ollama endpoint",
   "version": "0.1.0",
   "publisher": "rahulgoel",
-  "engines": { "vscode": "^1.90.0" },
-  "categories": ["Chat"],
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Chat"
+  ],
   "icon": "icon.png",
   "activationEvents": [
     "onChatParticipant:velora",
-    "onCommand:velora.*"
+    "onCommand:velora.*",
+    "onView:velora.chatView"
   ],
   "main": "./dist/extension.js",
   "contributes": {
-    "chatParticipants": [{
-      "id": "velora",
-      "name": "velora",
-      "fullName": "Velora AI",
-      "description": "Enterprise private AI coding assistant · Powered by Rahul Goel",
-      "isSticky": true,
-      "commands": [
-        { "name": "explain", "description": "Explain selected code" },
-        { "name": "fix", "description": "Fix errors using diagnostics" },
-        { "name": "test", "description": "Generate unit tests" },
-        { "name": "review", "description": "Code review for bugs, security, performance" },
-        { "name": "commit", "description": "Generate commit message from git diff" },
-        { "name": "askRepo", "description": "Ask about the workspace" }
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "velora",
+          "title": "Velora AI",
+          "icon": "icon.png"
+        }
       ]
-    }],
+    },
+    "views": {
+      "velora": [
+        {
+          "type": "webview",
+          "id": "velora.chatView",
+          "name": "Chat"
+        }
+      ]
+    },
+    "chatParticipants": [
+      {
+        "id": "velora",
+        "name": "velora",
+        "fullName": "Velora AI",
+        "description": "Enterprise private AI coding assistant · Powered by Rahul Goel",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "explain",
+            "description": "Explain selected code"
+          },
+          {
+            "name": "fix",
+            "description": "Fix errors using diagnostics"
+          },
+          {
+            "name": "test",
+            "description": "Generate unit tests"
+          },
+          {
+            "name": "review",
+            "description": "Code review for bugs, security, performance"
+          },
+          {
+            "name": "commit",
+            "description": "Generate commit message from git diff"
+          },
+          {
+            "name": "askRepo",
+            "description": "Ask about the workspace"
+          }
+        ]
+      }
+    ],
     "commands": [
-      { "command": "velora.setEndpoint", "title": "Velora AI: Set Endpoint URL" },
-      { "command": "velora.setAccessCode", "title": "Velora AI: Set Access Code" },
-      { "command": "velora.checkHealth", "title": "Velora AI: Check Endpoint Health" },
-      { "command": "velora.selectModel", "title": "Velora AI: Select Model" }
+      {
+        "command": "velora.setEndpoint",
+        "title": "Velora AI: Set Endpoint URL"
+      },
+      {
+        "command": "velora.setAccessCode",
+        "title": "Velora AI: Set Access Code"
+      },
+      {
+        "command": "velora.checkHealth",
+        "title": "Velora AI: Check Endpoint Health"
+      },
+      {
+        "command": "velora.selectModel",
+        "title": "Velora AI: Select Model"
+      }
     ],
     "configuration": {
       "title": "Velora AI",
@@ -58,11 +113,12 @@
   "scripts": {
     "build": "tsc -p .",
     "watch": "tsc -watch -p .",
-    "package": "npx @vscode/vsce package --no-dependencies",
+    "package": "vsce package --no-dependencies --allow-missing-repository",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/vscode": "^1.90.0",
-    "typescript": "^5.5.0"
+    "@vscode/vsce": "^2.15.0",
+    "typescript": "^5.6.3"
   }
 }
