@@ -29,6 +29,5 @@ npm-debug.log*
 *.swp
 *.swo
 
-# Lock files (electron)
-electron/package-lock.json
+# Lock files (keep root, ignore sub-projects)
 vscode-extension/package-lock.json

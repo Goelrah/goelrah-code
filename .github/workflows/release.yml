@@ -7,9 +7,6 @@ on:
 permissions:
   contents: write
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build:
     strategy:
@@ -33,11 +30,8 @@ jobs:
           node-version: 22
 
       # Build Vue app
-      - name: Install app deps
-        run: npm ci
-
-      - name: Build Vue app
-        run: npm run build
+      - run: npm ci
+      - run: npm run build
 
       # Build Electron
       - name: Install Electron deps
@@ -50,16 +44,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # List output
-      - name: List release files
-        run: ls -la release/ || ls -la electron/release/ || echo "No release dir found"
+      - name: List output
+        run: ls -la electron/release/ || true
         shell: bash
 
-      # Upload
       - name: Upload release artifacts
         uses: softprops/action-gh-release@v2
         with:
-          name: "Rahul Goel AI Studio v${{ github.ref_name }}"
+          name: "Rahul Goel AI Studio ${{ github.ref_name }}"
           body: |
             ## 🚀 Rahul Goel — AI Studio ${{ github.ref_name }}
 
@@ -67,42 +59,28 @@ jobs:
 
             ### What's included
             - 💬 Streaming chat with local AI models
-            - 🤖 Model selector (kimi-k2.5, llama3, mistral, gemma, and more)
+            - 🤖 Model selector (kimi-k2.5, llama3, mistral, gemma)
             - 🧠 Smart thinking animation — see the AI reason in real-time
-            - ⌨️ Command palette (⌘K), slash commands, keyboard shortcuts
-            - 📝 27 prompt templates for code review, testing, debugging
+            - ⌨️ Command palette, slash commands, keyboard shortcuts
+            - 📝 27 prompt templates
             - 🌙 Dark & light mode
-            - 🧙 Built-in setup wizard — installs Ollama and models for you
-
-            ### Download
-            | Platform | File |
-            |----------|------|
-            | 🍎 macOS | `.dmg` below |
-            | 🪟 Windows | `.exe` below |
-            | 🐧 Linux | `.AppImage` below |
+            - 🧙 Built-in setup wizard
 
             ### First time?
-            1. Download and open the app
-            2. The setup wizard will guide you through installing Ollama
-            3. It pulls the AI model automatically
-            4. Start chatting — no account, no cloud, no cost
+            1. Download for your platform below
+            2. Open the app — setup wizard guides you
+            3. Start chatting — no account, no cloud, no cost
 
-            > **Important:** Start Ollama with `OLLAMA_ORIGINS="*" ollama serve` for CORS support.
+            > Start Ollama with `OLLAMA_ORIGINS="*" ollama serve`
 
-            ---
-            Built by [Rahul Goel](https://github.com/goelrah) — Independent Consultant
+            Built by [Rahul Goel](https://github.com/goelrah)
           files: |
-            release/**/*.dmg
-            release/**/*.exe
-            release/**/*.msi
-            release/**/*.AppImage
-            release/**/*.deb
-            release/**/*.zip
-            electron/release/**/*.dmg
-            electron/release/**/*.exe
-            electron/release/**/*.msi
-            electron/release/**/*.AppImage
-            electron/release/**/*.deb
-            electron/release/**/*.zip
+            electron/release/*.dmg
+            electron/release/*.exe
+            electron/release/*.msi
+            electron/release/*.AppImage
+            electron/release/*.deb
+            electron/release/*.zip
+            electron/release/*.blockmap
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
