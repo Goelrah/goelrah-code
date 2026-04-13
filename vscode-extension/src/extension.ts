@@ -5,7 +5,7 @@ import { handleSlashCommand } from './commands';
 let client: ApiClient;
 
 function getConfig() {
-  const cfg = vscode.workspace.getConfiguration('aiStudio');
+  const cfg = vscode.workspace.getConfiguration('velora');
   return {
     endpoint: cfg.get<string>('endpointUrl') ?? 'http://localhost:11434',
     model: cfg.get<string>('model') ?? 'kimi-k2.5:cloud',
@@ -17,30 +17,26 @@ export function activate(context: vscode.ExtensionContext) {
   const cfg = getConfig();
   client = new ApiClient(cfg.endpoint);
 
-  // Re-read config on change
   vscode.workspace.onDidChangeConfiguration((e) => {
-    if (e.affectsConfiguration('aiStudio')) {
-      const c = getConfig();
-      client.setEndpoint(c.endpoint);
+    if (e.affectsConfiguration('velora')) {
+      client.setEndpoint(getConfig().endpoint);
     }
   });
 
   // --- Chat Participant ---
-  const participant = vscode.chat.createChatParticipant('ai-studio', async (request, chatContext, response, token) => {
+  const participant = vscode.chat.createChatParticipant('velora', async (request, chatContext, response, token) => {
     const cfg = getConfig();
     client.setEndpoint(cfg.endpoint);
 
     let systemPrompt = cfg.systemPrompt;
     let userMessage = request.prompt;
 
-    // Handle slash commands
     if (request.command) {
       const result = await handleSlashCommand(request.command, request.prompt);
       systemPrompt = result.systemPrompt || systemPrompt;
       userMessage = result.userMessage;
     }
 
-    // Build messages from chat history
     const messages: Array<{ role: string; content: string }> = [];
     if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
 
@@ -58,7 +54,6 @@ export function activate(context: vscode.ExtensionContext) {
 
     messages.push({ role: 'user', content: userMessage });
 
-    // Stream response
     const controller = new AbortController();
     token.onCancellationRequested(() => controller.abort());
 
@@ -80,30 +75,30 @@ export function activate(context: vscode.ExtensionContext) {
 
   // --- Commands ---
   context.subscriptions.push(
-    vscode.commands.registerCommand('aiStudio.setEndpoint', async () => {
+    vscode.commands.registerCommand('velora.setEndpoint', async () => {
       const url = await vscode.window.showInputBox({
         prompt: 'Enter your Ollama endpoint URL',
         value: getConfig().endpoint,
-        placeHolder: 'https://your-server.com',
+        placeHolder: 'http://localhost:11434',
       });
       if (url) {
-        await vscode.workspace.getConfiguration('aiStudio').update('endpointUrl', url, true);
+        await vscode.workspace.getConfiguration('velora').update('endpointUrl', url, true);
         vscode.window.showInformationMessage(`Velora AI: Endpoint set to ${url}`);
       }
     }),
 
-    vscode.commands.registerCommand('aiStudio.setAccessCode', async () => {
+    vscode.commands.registerCommand('velora.setAccessCode', async () => {
       const code = await vscode.window.showInputBox({
-        prompt: 'Enter access code (stored in VS Code SecretStorage)',
+        prompt: 'Enter access code (stored securely in VS Code)',
         password: true,
       });
       if (code) {
-        await context.secrets.store('aiStudio.accessCode', code);
+        await context.secrets.store('velora.accessCode', code);
         vscode.window.showInformationMessage('Velora AI: Access code saved securely.');
       }
     }),
 
-    vscode.commands.registerCommand('aiStudio.checkHealth', async () => {
+    vscode.commands.registerCommand('velora.checkHealth', async () => {
       const cfg = getConfig();
       client.setEndpoint(cfg.endpoint);
       const h = await client.checkHealth();
@@ -114,7 +109,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
     }),
 
-    vscode.commands.registerCommand('aiStudio.selectModel', async () => {
+    vscode.commands.registerCommand('velora.selectModel', async () => {
       const cfg = getConfig();
       client.setEndpoint(cfg.endpoint);
       try {
@@ -124,7 +119,7 @@ export function activate(context: vscode.ExtensionContext) {
           { placeHolder: 'Select a model' },
         );
         if (pick) {
-          await vscode.workspace.getConfiguration('aiStudio').update('model', pick.label, true);
+          await vscode.workspace.getConfiguration('velora').update('model', pick.label, true);
           vscode.window.showInformationMessage(`Velora AI: Model set to ${pick.label}`);
         }
       } catch (err) {

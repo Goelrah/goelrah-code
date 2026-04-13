@@ -1,54 +1,55 @@
 {
-  "name": "rahulgoel-ai-studio",
+  "name": "velora-ai",
   "displayName": "Velora AI",
-  "description": "Private AI coding assistant — connects to your Ollama endpoint",
+  "description": "Enterprise-grade private AI coding assistant — connects to your local Ollama endpoint",
   "version": "0.1.0",
   "publisher": "rahulgoel",
   "engines": { "vscode": "^1.90.0" },
   "categories": ["Chat"],
+  "icon": "icon.png",
   "activationEvents": [
-    "onChatParticipant:ai-studio",
-    "onCommand:aiStudio.*"
+    "onChatParticipant:velora",
+    "onCommand:velora.*"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "chatParticipants": [{
-      "id": "ai-studio",
-      "name": "ai-studio",
-      "fullName": "Velora AI Studio",
-      "description": "Private AI coding assistant",
+      "id": "velora",
+      "name": "velora",
+      "fullName": "Velora AI",
+      "description": "Enterprise private AI coding assistant · Powered by Rahul Goel",
       "isSticky": true,
       "commands": [
         { "name": "explain", "description": "Explain selected code" },
-        { "name": "fix", "description": "Fix errors in code" },
-        { "name": "test", "description": "Generate tests" },
-        { "name": "review", "description": "Review code" },
-        { "name": "commit", "description": "Generate commit message" },
+        { "name": "fix", "description": "Fix errors using diagnostics" },
+        { "name": "test", "description": "Generate unit tests" },
+        { "name": "review", "description": "Code review for bugs, security, performance" },
+        { "name": "commit", "description": "Generate commit message from git diff" },
         { "name": "askRepo", "description": "Ask about the workspace" }
       ]
     }],
     "commands": [
-      { "command": "aiStudio.setEndpoint", "title": "Velora AI: Set Endpoint URL" },
-      { "command": "aiStudio.setAccessCode", "title": "Velora AI: Set Access Code" },
-      { "command": "aiStudio.checkHealth", "title": "Velora AI: Check Endpoint Health" },
-      { "command": "aiStudio.selectModel", "title": "Velora AI: Select Model" }
+      { "command": "velora.setEndpoint", "title": "Velora AI: Set Endpoint URL" },
+      { "command": "velora.setAccessCode", "title": "Velora AI: Set Access Code" },
+      { "command": "velora.checkHealth", "title": "Velora AI: Check Endpoint Health" },
+      { "command": "velora.selectModel", "title": "Velora AI: Select Model" }
     ],
     "configuration": {
-      "title": "Velora AI Studio",
+      "title": "Velora AI",
       "properties": {
-        "aiStudio.endpointUrl": {
+        "velora.endpointUrl": {
           "type": "string",
           "default": "http://localhost:11434",
           "description": "Ollama-compatible endpoint URL"
         },
-        "aiStudio.model": {
+        "velora.model": {
           "type": "string",
           "default": "kimi-k2.5:cloud",
           "description": "Default model name"
         },
-        "aiStudio.systemPrompt": {
+        "velora.systemPrompt": {
           "type": "string",
-          "default": "You are Velora AI Studio, a private AI coding assistant. Be precise and technically accurate.",
+          "default": "You are Velora AI, an enterprise-grade private AI coding assistant. Be precise, concise, and technically accurate.",
           "description": "System prompt sent with every request"
         }
       }

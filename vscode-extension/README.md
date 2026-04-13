@@ -1,10 +1,12 @@
-# Velora AI (VS Code Extension)
+# Velora AI — VS Code Extension
 
-Private AI coding assistant extension that connects to your Ollama endpoint.
+Enterprise-grade private AI coding assistant for VS Code. Connects to your local Ollama endpoint.
 
-## Chat Participant
+**Powered by [Rahul Goel](https://goelrah.github.io/) · Est. April 2026**
 
-Type `@ai-studio` in VS Code chat to start a conversation.
+## Usage
+
+Type `@velora` in VS Code chat to start a conversation.
 
 ## Slash Commands
 
@@ -28,9 +30,9 @@ Type `@ai-studio` in VS Code chat to start a conversation.
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `aiStudio.endpointUrl` | `https://rahulollama.loca.lt` | Ollama endpoint |
-| `aiStudio.model` | `llama3` | Default model |
-| `aiStudio.systemPrompt` | (coding assistant) | System prompt |
+| `velora.endpointUrl` | `http://localhost:11434` | Ollama endpoint |
+| `velora.model` | `kimi-k2.5:cloud` | Default model |
+| `velora.systemPrompt` | (coding assistant) | System prompt |
 
 ## Install
 
@@ -39,13 +41,17 @@ cd vscode-extension
 npm install
 npm run build
 npm run package
-# Produces rahulgoel-ai-studio-0.1.0.vsix
-code --install-extension rahulgoel-ai-studio-0.1.0.vsix
+# Produces velora-ai-0.1.0.vsix
+code --install-extension velora-ai-0.1.0.vsix
 ```
+
+## Prerequisites
+
+- Ollama running locally: `OLLAMA_ORIGINS="*" ollama serve`
+- At least one model pulled: `ollama pull kimi-k2.5:cloud`
 
 ## Security
 
 - Access code stored in VS Code SecretStorage (encrypted)
-- Endpoint URL in settings (not a secret)
 - No secrets in extension source code
 - Private VSIX distribution — no marketplace needed
