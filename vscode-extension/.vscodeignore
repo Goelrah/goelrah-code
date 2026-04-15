@@ -1,6 +1,8 @@
 src/**
 node_modules/**
 tsconfig.json
-.gitignore
 **/*.ts
 **/*.map
+.gitignore
+mise.toml
+*.vsix

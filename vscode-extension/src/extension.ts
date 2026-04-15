@@ -1,138 +1,148 @@
 import * as vscode from 'vscode';
-import { ApiClient } from './api-client';
-import { handleSlashCommand } from './commands';
-import { VeloraSidebarProvider } from './sidebar-provider';
+import * as http from 'http';
 
-let client: ApiClient;
+function httpPost(url: string, body: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const parsed = new URL(url);
+    const req = http.request({
+      hostname: parsed.hostname,
+      port: parsed.port || 80,
+      path: parsed.pathname,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      timeout: 60000,
+    }, (res) => {
+      let data = '';
+      res.on('data', (chunk) => { data += chunk; });
+      res.on('end', () => resolve(data));
+    });
+    req.on('error', reject);
+    req.on('timeout', () => { req.destroy(); reject(new Error('Timeout')); });
+    req.write(body);
+    req.end();
+  });
+}
 
-function getConfig() {
-  const cfg = vscode.workspace.getConfiguration('velora');
-  return {
-    endpoint: cfg.get<string>('endpointUrl') ?? 'http://localhost:11434',
-    model: cfg.get<string>('model') ?? 'kimi-k2.5:cloud',
-    systemPrompt: cfg.get<string>('systemPrompt') ?? '',
-  };
+function httpGet(url: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const parsed = new URL(url);
+    const req = http.get({
+      hostname: parsed.hostname,
+      port: parsed.port || 80,
+      path: parsed.pathname,
+      timeout: 10000,
+    }, (res) => {
+      let data = '';
+      res.on('data', (chunk) => { data += chunk; });
+      res.on('end', () => resolve(data));
+    });
+    req.on('error', reject);
+    req.on('timeout', () => { req.destroy(); reject(new Error('Timeout')); });
+  });
+}
+
+class ChatViewProvider implements vscode.WebviewViewProvider {
+  constructor(private readonly _extensionUri: vscode.Uri) {}
+
+  resolveWebviewView(webviewView: vscode.WebviewView) {
+    webviewView.webview.options = { enableScripts: true };
+
+    const config = vscode.workspace.getConfiguration('velora');
+    const model = config.get<string>('model') || 'kimi-k2.5:cloud';
+
+    webviewView.webview.html = getHtml(model);
+
+    webviewView.webview.onDidReceiveMessage(async (msg: any) => {
+      if (msg.type === 'chat') {
+        const cfg = vscode.workspace.getConfiguration('velora');
+        const ep = cfg.get<string>('endpointUrl') || 'http://localhost:11434';
+        const mdl = cfg.get<string>('model') || 'kimi-k2.5:cloud';
+
+        try {
+          const result = await httpPost(`${ep}/api/chat`, JSON.stringify({
+            model: mdl,
+            messages: msg.messages,
+            stream: false,
+          }));
+          const data = JSON.parse(result);
+          webviewView.webview.postMessage({
+            type: 'response',
+            content: data.message?.content || 'No response',
+          });
+        } catch (err: any) {
+          webviewView.webview.postMessage({
+            type: 'error',
+            content: err.message || 'Connection failed',
+          });
+        }
+      }
+    });
+  }
+}
+
+function getHtml(model: string): string {
+  return `<!DOCTYPE html>
+<html>
+<head>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--vscode-font-family);font-size:13px;color:var(--vscode-foreground);background:var(--vscode-sideBar-background);display:flex;flex-direction:column;height:100vh}
+.hdr{padding:8px 10px;border-bottom:1px solid var(--vscode-panel-border);font-weight:600;font-size:12px;display:flex;align-items:center;gap:6px}
+.hdr .dot{width:8px;height:8px;border-radius:50%;background:#0d9488}
+.msgs{flex:1;overflow-y:auto;padding:8px 10px}
+.msg{margin-bottom:8px}
+.msg .who{font-size:11px;font-weight:600;margin-bottom:2px;opacity:0.6}
+.msg .who.user{color:var(--vscode-textLink-foreground)}
+.msg .who.ai{color:#0d9488}
+.msg .txt{white-space:pre-wrap;word-break:break-word;line-height:1.5}
+.ld{font-size:11px;color:var(--vscode-descriptionForeground);padding:4px 10px}
+.ia{padding:8px 10px;border-top:1px solid var(--vscode-panel-border)}
+.ir{display:flex;gap:4px}
+textarea{flex:1;resize:none;background:var(--vscode-input-background);color:var(--vscode-input-foreground);border:1px solid var(--vscode-input-border);border-radius:4px;padding:6px;font-size:13px;font-family:var(--vscode-font-family);outline:none;min-height:28px;max-height:100px}
+textarea:focus{border-color:var(--vscode-focusBorder)}
+button{background:var(--vscode-button-background);color:var(--vscode-button-foreground);border:none;border-radius:4px;padding:6px 10px;cursor:pointer;font-size:12px}
+button:hover{background:var(--vscode-button-hoverBackground)}
+button:disabled{opacity:0.5}
+.ft{padding:4px 10px;text-align:center;font-size:10px;color:var(--vscode-descriptionForeground)}
+.ft a{color:var(--vscode-textLink-foreground);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="hdr"><div class="dot"></div>Velora AI<span style="margin-left:auto;font-weight:400;font-size:10px;opacity:0.5">${model}</span></div>
+<div class="msgs" id="m"></div>
+<div class="ld" id="ld" style="display:none">Thinking...</div>
+<div class="ia"><div class="ir"><textarea id="i" rows="1" placeholder="Ask anything..."></textarea><button id="b" onclick="s()">Send</button></div></div>
+<div class="ft">Powered by <a href="https://goelrah.github.io/">Rahul Goel</a></div>
+<script>
+const vs=acquireVsCodeApi(),m=document.getElementById('m'),i=document.getElementById('i'),b=document.getElementById('b'),l=document.getElementById('ld');
+let h=[];
+function s(){const t=i.value.trim();if(!t)return;i.value='';a('user',t);h.push({role:'user',content:t});b.disabled=true;l.style.display='block';vs.postMessage({type:'chat',messages:h})}
+function a(w,t){const d=document.createElement('div');d.className='msg';d.innerHTML='<div class="who '+w+'">'+(w==='user'?'You':'Velora AI')+'</div><div class="txt"></div>';d.querySelector('.txt').textContent=t;m.appendChild(d);m.scrollTop=m.scrollHeight}
+window.addEventListener('message',e=>{const d=e.data;if(d.type==='response'){a('ai',d.content);h.push({role:'assistant',content:d.content})}if(d.type==='error')a('ai','Error: '+d.content);b.disabled=false;l.style.display='none'});
+i.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();s()}});
+</script>
+</body>
+</html>`;
 }
 
 export function activate(context: vscode.ExtensionContext) {
-  const cfg = getConfig();
-  client = new ApiClient(cfg.endpoint);
-
-  vscode.workspace.onDidChangeConfiguration((e) => {
-    if (e.affectsConfiguration('velora')) {
-      client.setEndpoint(getConfig().endpoint);
-    }
-  });
-
-  // --- Chat Participant ---
-  const participant = vscode.chat.createChatParticipant('velora', async (request, chatContext, response, token) => {
-    const cfg = getConfig();
-    client.setEndpoint(cfg.endpoint);
-
-    let systemPrompt = cfg.systemPrompt;
-    let userMessage = request.prompt;
-
-    if (request.command) {
-      const result = await handleSlashCommand(request.command, request.prompt);
-      systemPrompt = result.systemPrompt || systemPrompt;
-      userMessage = result.userMessage;
-    }
-
-    const messages: Array<{ role: string; content: string }> = [];
-    if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
-
-    for (const turn of chatContext.history) {
-      if (turn instanceof vscode.ChatRequestTurn) {
-        messages.push({ role: 'user', content: turn.prompt });
-      } else if (turn instanceof vscode.ChatResponseTurn) {
-        const parts = turn.response.map((p) => {
-          if (p instanceof vscode.ChatResponseMarkdownPart) return p.value.value;
-          return '';
-        });
-        messages.push({ role: 'assistant', content: parts.join('') });
-      }
-    }
-
-    messages.push({ role: 'user', content: userMessage });
-
-    const controller = new AbortController();
-    token.onCancellationRequested(() => controller.abort());
-
-    try {
-      for await (const chunk of client.streamChat(
-        { model: cfg.model, messages, stream: true },
-        controller.signal,
-      )) {
-        response.markdown(chunk);
-      }
-    } catch (err) {
-      if ((err as Error).name === 'AbortError') return;
-      response.markdown(`\n\n**Error:** ${(err as Error).message}`);
-    }
-  });
-
-  participant.iconPath = vscode.Uri.joinPath(context.extensionUri, 'icon.png');
-  context.subscriptions.push(participant);
-
-  // --- Sidebar ---
-  const sidebarProvider = new VeloraSidebarProvider(context.extensionUri, context.secrets);
+  const provider = new ChatViewProvider(context.extensionUri);
   context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(VeloraSidebarProvider.viewType, sidebarProvider),
+    vscode.window.registerWebviewViewProvider('velora.chat', provider)
   );
 
-  // --- Commands ---
   context.subscriptions.push(
-    vscode.commands.registerCommand('velora.setEndpoint', async () => {
-      const url = await vscode.window.showInputBox({
-        prompt: 'Enter your Ollama endpoint URL',
-        value: getConfig().endpoint,
-        placeHolder: 'http://localhost:11434',
-      });
-      if (url) {
-        await vscode.workspace.getConfiguration('velora').update('endpointUrl', url, true);
-        vscode.window.showInformationMessage(`Velora AI: Endpoint set to ${url}`);
-      }
-    }),
-
-    vscode.commands.registerCommand('velora.setAccessCode', async () => {
-      const code = await vscode.window.showInputBox({
-        prompt: 'Enter access code (stored securely in VS Code)',
-        password: true,
-      });
-      if (code) {
-        await context.secrets.store('velora.accessCode', code);
-        vscode.window.showInformationMessage('Velora AI: Access code saved securely.');
-      }
-    }),
-
     vscode.commands.registerCommand('velora.checkHealth', async () => {
-      const cfg = getConfig();
-      client.setEndpoint(cfg.endpoint);
-      const h = await client.checkHealth();
-      if (h.ok) {
-        vscode.window.showInformationMessage(`Velora AI: Connected ✓ — ${h.models} models, ${h.latency}ms`);
-      } else {
-        vscode.window.showErrorMessage(`Velora AI: ${h.error}`);
-      }
-    }),
-
-    vscode.commands.registerCommand('velora.selectModel', async () => {
-      const cfg = getConfig();
-      client.setEndpoint(cfg.endpoint);
+      const cfg = vscode.workspace.getConfiguration('velora');
+      const ep = cfg.get<string>('endpointUrl') || 'http://localhost:11434';
       try {
-        const models = await client.listModels();
-        const pick = await vscode.window.showQuickPick(
-          models.map((m) => ({ label: m.name, description: `${(m.size / 1e9).toFixed(1)}GB` })),
-          { placeHolder: 'Select a model' },
-        );
-        if (pick) {
-          await vscode.workspace.getConfiguration('velora').update('model', pick.label, true);
-          vscode.window.showInformationMessage(`Velora AI: Model set to ${pick.label}`);
-        }
-      } catch (err) {
-        vscode.window.showErrorMessage(`Velora AI: Could not fetch models — ${(err as Error).message}`);
+        const result = await httpGet(`${ep}/api/tags`);
+        const data = JSON.parse(result);
+        vscode.window.showInformationMessage(`Velora AI: Connected ✓ — ${data.models?.length || 0} models`);
+      } catch {
+        vscode.window.showErrorMessage('Velora AI: Cannot reach endpoint');
       }
-    }),
+    })
   );
 }
 
