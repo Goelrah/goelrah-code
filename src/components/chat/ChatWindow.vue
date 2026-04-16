@@ -76,6 +76,10 @@ function exportConversation() {
     <!-- Input area — always at bottom -->
     <div class="w-full sticky bottom-0 z-10 pb-2">
       <ChatInput :streaming="streaming" @send="send" @stop="stop" @slash-command="handleSlashCommand" />
+      <!-- Ad placeholder below input -->
+      <div id="velora-ad-chat" class="mx-auto max-w-3xl mt-1 min-h-[50px] flex items-center justify-center rounded-lg" :style="{ background: 'var(--bg-200)' }">
+        <!-- Replace with AdSense script -->
+      </div>
     </div>
   </main>
 </template>
